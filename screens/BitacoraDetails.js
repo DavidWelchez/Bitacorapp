@@ -8,21 +8,21 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
- 
+
 } from 'react-native';
-import React, { Component,useState, useEffect } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
 // import RNPickerSelect, { defaultStyles } from './debug';
 import axios from 'axios';
 import DatePicker from 'react-native-datepicker';
+import { TextInputMask } from "react-native-masked-text";
+const baseUrl = 'http://192.168.1.6:4000/Bitacorapp/addPlataforma';
+const baseUrl1 = 'http://192.168.1.6:4000/Bitacorapp/listEventos';
+const baseUrl2 = 'http://192.168.1.6:4000/Bitacorapp/listUsuarios';
+const baseUrl3 = 'http://192.168.1.6:4000/Bitacorapp/listProveedores';
+const baseUrl4 = 'http://192.168.1.6:4000/Bitacorapp/listFactorRiesgos';
+const baseUrl5 = 'http://192.168.1.6:4000/Bitacorapp/addBitacora';
 
-// import TimePicker from 'react-time-picker/dist/entry.nostyle';
-// import DateTimePicker from '@react-native-community/datetimepicker';
-const baseUrl = 'http://192.168.1.4:4000/Bitacorapp/addPlataforma'; 
-const baseUrl1 = 'http://192.168.1.4:4000/Bitacorapp/listEventos'; 
-const baseUrl2 = 'http://192.168.1.4:4000/Bitacorapp/listUsuarios'; 
-const baseUrl3 = 'http://192.168.1.4:4000/Bitacorapp/listProveedores'; 
-const baseUrl4 = 'http://192.168.1.4:4000/Bitacorapp/listFactorRiesgos'; 
 
 const estado = [
   {
@@ -42,29 +42,30 @@ const estado = [
 
 export default class App extends Component {
 
-  
+
 
   constructor(props) {
     super(props);
 
     this.inputRefs = {
-     
-      favSport1: null,
-   
-    };
-    
-var today = new Date;
-    this.state = {
-      listP:[],
-      listE:[],
-      listU:[],
-      listPro:[],
-      listF:[],
 
-     date : today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate(),
-     date2 : today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate(),
-    // value : ('10:00'),
-    
+      favSport1: null,
+
+    };
+
+    var today = new Date;
+    var hour = new Date;
+    this.state = {
+      listP: [],
+      listE: [],
+      listU: [],
+      listPro: [],
+      listF: [],
+
+      date: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
+      date2: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
+
+
       plataforma: undefined,
       evento: undefined,
       userId: undefined,
@@ -72,103 +73,80 @@ var today = new Date;
       proveedoresId: undefined,
       factorRiesgoId: undefined,
       estado: undefined,
+      dt: hour.getHours() + ':' + hour.getMinutes(),
+      dt2: hour.getHours() + ':' + hour.getMinutes()
 
-      // date :(new Date(1598051730000)),
-      // mode:('date'),
-      // show:(false),
- 
-  };
+
+    };
+
   }
 
-
- 
-  //  onChange  (event,selectedDate) {
-  //   const currentDate = selectedDate || this.state.date;
-  //   this.state.show=(Platform.OS === 'ios');
-  //   this.state.date=(currentDate);
-  // };
-
-  //  showMode  (currentMode) {
-  //   this.state.show=(true);
-  //   this.state.mode=(currentMode);
-  // };
-
-//    showDatepicker () {
-    
-//     this.state.show=(true);
-//     this.state.mode=('date');
-//   };
-
-//  showTimepicker ()  {
-//   this.state.show=(true);
-//   this.state.mode=('time');
-//   };
-  
-  componentDidMount(){
+  componentDidMount() {
     this.getPlataforma();
     this.getEventos();
     this.getUsuarios();
     this.getProveedores();
     this.getFactorRiesgo();
   }
- 
+
   async getPlataforma() {
-    try{
+    try {
       const response = await axios.get(baseUrl);
-      const { data } = response;  
-      this.setState({ listP:data });
+      const { data } = response;
+      this.setState({ listP: data });
       console.log(data);
-    }catch(error){
+    } catch (error) {
       console.error(error);
     }
   }
   async getEventos() {
-    try{
+    try {
       const response = await axios.get(baseUrl1);
-      const { data } = response;  
-      this.setState({ listE:data });
+      const { data } = response;
+      this.setState({ listE: data });
       console.log(data);
-    }catch(error){
+    } catch (error) {
       console.error(error);
     }
   }
 
   async getUsuarios() {
-    try{
+    try {
       const response = await axios.get(baseUrl2);
-      const { data } = response;  
-      this.setState({ listU:data });
+      const { data } = response;
+      this.setState({ listU: data });
       console.log(data);
-    }catch(error){
+    } catch (error) {
       console.error(error);
     }
   }
 
   async getProveedores() {
-    try{
+    try {
       const response = await axios.get(baseUrl3);
-      const { data } = response;  
-      this.setState({ listPro:data });
+      const { data } = response;
+      this.setState({ listPro: data });
       console.log(data);
-    }catch(error){
+    } catch (error) {
       console.error(error);
     }
   }
 
   async getFactorRiesgo() {
-    try{
+    try {
       const response = await axios.get(baseUrl4);
-      const { data } = response;  
-      this.setState({ listF:data });
+      const { data } = response;
+      this.setState({ listF: data });
       console.log(data);
-    }catch(error){
+    } catch (error) {
       console.error(error);
     }
   }
-  
-  
- 
+
+
+
   render() {
+    console.log(this.state.fecha);
     const placeholder1 = {
       label: 'Plataforma',
       value: null,
@@ -204,123 +182,117 @@ var today = new Date;
       value: null,
       color: '#9EA0A4',
     };
-    const { listP} = this.state;
-    const { listE} = this.state;
-    const { listU} = this.state;
-    const { listPro} = this.state;
-    const { listF} = this.state;
+    const { listP } = this.state;
+    const { listE } = this.state;
+    const { listU } = this.state;
+    const { listPro } = this.state;
+    const { listF } = this.state;
 
 
-    const plataforma= [] ;
-    const Eventos= [] ;
-    const Usuarios= [] ;
-    const Proveedores= [] ;
-    const FactorRiesgos= [] ;
-   
+    const plataforma = [];
+    const Eventos = [];
+    const Usuarios = [];
+    const Proveedores = [];
+    const FactorRiesgos = [];
+
     this.state.listP.map((plataformas) => {
-     plataforma.push({
-      label: plataformas.plataforma,
-      value: plataformas.id
-     })
+      plataforma.push({
+        label: plataformas.plataforma,
+        value: plataformas.id
+      })
     })
-    
+
     this.state.listE.map((eventos) => {
       Eventos.push({
-       label: eventos.evento,
-       value: eventos.id
+        label: eventos.evento,
+        value: eventos.id
       })
-     })
+    })
 
-     this.state.listU.map((usuarios) => {
+    this.state.listU.map((usuarios) => {
       Usuarios.push({
-       label: usuarios.fullname,
-       value: usuarios.id
+        label: usuarios.fullname,
+        value: usuarios.id
       })
-     })
+    })
 
-     this.state.listPro.map((proveedores) => {
+    this.state.listPro.map((proveedores) => {
       Proveedores.push({
-       label: proveedores.proveedor,
-       value: proveedores.id
+        label: proveedores.proveedor,
+        value: proveedores.id
       })
-     })
-     this.state.listF.map((factorRiesgos) => {
+    })
+    this.state.listF.map((factorRiesgos) => {
       FactorRiesgos.push({
-       label: factorRiesgos.factor,
-       value: factorRiesgos.id
+        label: factorRiesgos.factor,
+        value: factorRiesgos.id
       })
-     })
-  
-  
-    
-    
+    })
+
+
+
+
 
 
     return (
-     
+
       <View style={styles.container}>
         <ScrollView
-        
+
           style={styles.scrollContainer}
           contentContainerStyle={styles.scrollContentContainer}>
-          
-          {/* <View>
-        <Button onPress={this.showDatepicker()} title="Show date picker!" />
-      </View>
-      <View>
-        <Button onPress={this.showTimepicker()} title="Show time picker!" />
-      </View>
-      {this.state.show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={this.state.date}
-          mode={this.state.mode}
-          is24Hour={true}
-          display="default"
-         onChange={this.onChange(this.state.date)}
-         
-        />
-      )} */}
-          {/* <TimePicker
-        onChange={(value) => {this.setState({value: value})}}
-        value={this.state.value}
-      /> */}
+
+
           <Text>Fecha de incidencia</Text>
           <DatePicker
-        style={{width: 200, background: "rgb(170, 224, 112)",}}
-        date={this.state.date}
-        mode="date"
-        placeholder="select date"
-        format="YYYY-MM-DD"
-        minDate="2000-01-01"
-        maxDate="2100-01-01"
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        customStyles={{
-         
-          dateIcon: {
-            position: 'absolute',
-            left: 0,
-            top: 4,
-            marginLeft: 0
-          },
-          dateInput: {
-            marginLeft: 36
-          }
-          // ... You can check the source to find the other keys.
-        }}
-        onDateChange={(date) => {this.setState({date: date})}}
-        
-      />
-    
+            style={{ width: 200, background: "rgb(170, 224, 112)", }}
+            date={this.state.date}
+            mode="date"
+            placeholder="select date"
+            format="YYYY-MM-DD"
+            minDate="2000-01-01"
+            maxDate="2100-01-01"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
 
+              dateIcon: {
+                position: 'absolute',
+                left: 0,
+                top: 4,
+                marginLeft: 0
+              },
+              dateInput: {
+                marginLeft: 36
+              }
+              // ... You can check the source to find the other keys.
+            }}
+            onDateChange={(date) => { this.setState({ date: date }) }}
 
-      <Text></Text>
+          />
+          <Text></Text>
+          <Text>Hora incidencia</Text>
+          <TextInputMask
+            placeholder="00:00"
+            
+            type={"datetime"}
+            options={{
+              format: "HH:mm",
+            }}
+            value={this.state.dt}
+            onChangeText={(text) => {
+              this.setState({
+                dt: text,
+              });
+            }}
+          />
+
+          <Text></Text>
           <Text>Plataforma</Text>
           <RNPickerSelect
             placeholder={placeholder1}
-            
-            items={ plataforma}
+
+            items={plataforma}
             onValueChange={value => {
               this.setState({
                 plataforma: value,
@@ -333,12 +305,12 @@ var today = new Date;
               this.inputRefs.plataforma = el;
             }}
           />
-<Text></Text>
-<Text>Eventos</Text>
+          <Text></Text>
+          <Text>Eventos</Text>
           <RNPickerSelect
             placeholder={placeholder2}
-            
-            items={ Eventos}
+
+            items={Eventos}
             onValueChange={value => {
               this.setState({
                 evento: value,
@@ -351,21 +323,21 @@ var today = new Date;
               this.inputRefs.evento = el;
             }}
           />
-<Text></Text>
+          <Text></Text>
 
-<Text>Descripción</Text>
-        <TextInput
-          placeholder="Descripción..."
-          onChangeText={(value) => handleChangeText(value, "descripcion")}
-        //   value={state.name}
-        />
-        <Text></Text>
+          <Text>Descripción</Text>
+          <TextInput
+            placeholder="Descripción..."
+            onChangeText={(value) => handleChangeText(value, "descripcion")}
+          //   value={state.name}
+          />
+          <Text></Text>
 
-<Text>Empleado reportó</Text>
-         <RNPickerSelect
+          <Text>Empleado reportó</Text>
+          <RNPickerSelect
             placeholder={placeholder3}
-            
-            items={ Usuarios}
+
+            items={Usuarios}
             onValueChange={value => {
               this.setState({
                 userId: value,
@@ -380,11 +352,11 @@ var today = new Date;
           />
           <Text></Text>
 
-<Text>Empleado atendió</Text>
-           <RNPickerSelect
+          <Text>Empleado atendió</Text>
+          <RNPickerSelect
             placeholder={placeholder4}
-            
-            items={ Usuarios}
+
+            items={Usuarios}
             onValueChange={value => {
               this.setState({
                 atendioid: value,
@@ -398,12 +370,12 @@ var today = new Date;
             }}
           />
 
-<Text></Text>
-<Text>Proveedores</Text>
+          <Text></Text>
+          <Text>Proveedores</Text>
           <RNPickerSelect
             placeholder={placeholder5}
-            
-            items={ Proveedores}
+
+            items={Proveedores}
             onValueChange={value => {
               this.setState({
                 proveedoresId: value,
@@ -416,38 +388,56 @@ var today = new Date;
               this.inputRefs.proveedoresId = el;
             }}
           />
-              <Text>Fecha de solucion </Text>
+          <Text></Text>
+          <Text>Fecha de solucion </Text>
           <DatePicker
-        style={{width: 200, background: "rgb(170, 224, 112)",}}
-        date={this.state.date2}
-        mode="date"
-        placeholder="select date"
-        format="YYYY-MM-DD"
-        minDate="2000-01-01"
-        maxDate="2100-01-01"
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        customStyles={{
-         
-          dateIcon: {
-            position: 'absolute',
-            left: 0,
-            top: 4,
-            marginLeft: 0
-          },
-          dateInput: {
-            marginLeft: 36
-          }
-          // ... You can check the source to find the other keys.
-        }}
-        onDateChange={(date2) => {this.setState({date2: date2})}}
-      />
-      <Text></Text>
-<Text>Estado</Text>
+            style={{ width: 200, background: "rgb(170, 224, 112)", }}
+            date={this.state.date2}
+            mode="date"
+            placeholder="select date"
+            format="YYYY-MM-DD"
+            minDate="2000-01-01"
+            maxDate="2100-01-01"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+
+              dateIcon: {
+                position: 'absolute',
+                left: 0,
+                top: 4,
+                marginLeft: 0
+              },
+              dateInput: {
+                marginLeft: 36
+              }
+              // ... You can check the source to find the other keys.
+            }}
+            onDateChange={(date2) => { this.setState({ date2: date2 }) }}
+          />
+          <Text></Text>
+               <Text>Hora solucion</Text>
+          <TextInputMask
+            placeholder="00:00"
+            
+            type={"datetime"}
+            options={{
+              format: "HH:mm",
+            }}
+            value={this.state.dt2}
+            onChangeText={(text) => {
+              this.setState({
+                dt: text,
+              });
+            }}
+          />
+
+          <Text></Text>
+          <Text>Estado</Text>
           <RNPickerSelect
             placeholder={placeholderEstado}
-            
-            items={ estado}
+
+            items={estado}
             onValueChange={value => {
               this.setState({
                 estado: value,
@@ -461,14 +451,14 @@ var today = new Date;
             }}
           />
           <Text></Text>
-<Text>Factores de riesgo</Text>
+          <Text>Factores de riesgo</Text>
           <RNPickerSelect
             placeholder={placeholder6}
-            
-            items={ FactorRiesgos}
+
+            items={FactorRiesgos}
             onValueChange={value => {
               this.setState({
-                proveedoresId: value,
+                factorRiesgoId: value,
               });
             }}
             style={pickerSelectStyles}
@@ -481,9 +471,9 @@ var today = new Date;
 
           <View paddingVertical={5} />
           <View style={styles.button}>
-        <Button title="Guardar" onPress={() => saveNewUser()} />
-      </View>
-         
+            <Button title="Guardar" onPress={() => saveNewUser()} />
+          </View>
+
         </ScrollView>
       </View>
     );

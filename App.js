@@ -13,6 +13,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import BitacoraAdd from "./screens/BitacoraAdd";
 import BitacoraList from "./screens/BitacoraList";
 import BitacoraDetails from "./screens/BitacoraDetails";
+import Fecha from "./screens/Fecha";
+
 
 function LogoTitle() {
   return (
@@ -54,6 +56,11 @@ function MyStack() {
       <Stack.Screen
         name="BitacoraDetails"
         component={BitacoraDetails}
+        options={{ title: "Bitacorapp" }}
+      />
+      <Stack.Screen
+        name="Fecha"
+        component={Fecha}
         options={{ title: "Bitacorapp" }}
       />
     </Stack.Navigator>

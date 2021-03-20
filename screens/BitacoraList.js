@@ -10,7 +10,7 @@ import axios from 'axios';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-const baseUrl = 'http://192.168.1.4:4000/Bitacorapp/list'; 
+const baseUrl = 'http://192.168.1.6:4000/Bitacorapp/list'; 
 class list extends Component {
   
   constructor() {
@@ -67,7 +67,7 @@ class list extends Component {
           border-color=  "rgb(170, 224, 112)"
           color=  "rgb(35, 148, 0)"
             onPress={() =>  this.props.navigation.navigate("BitacoraDetails")}
-            title="Crear nuevo"
+            title="Nuevo"
           />
           {list.map((bitacora) => {
             return (
