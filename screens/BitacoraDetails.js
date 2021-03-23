@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
+  TouchableOpacity,
 
 } from 'react-native';
 import React, { Component, useState, useEffect } from 'react';
@@ -16,15 +17,15 @@ import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
 import axios from 'axios';
 import DatePicker from 'react-native-datepicker';
 import { TextInputMask } from "react-native-masked-text";
-const baseUrl = 'http://192.168.1.6:4000/Bitacorapp/addPlataforma';
-const baseUrl1 = 'http://192.168.1.6:4000/Bitacorapp/listEventos';
-const baseUrl2 = 'http://192.168.1.6:4000/Bitacorapp/listUsuarios';
-const baseUrl3 = 'http://192.168.1.6:4000/Bitacorapp/listProveedores';
-const baseUrl4 = 'http://192.168.1.6:4000/Bitacorapp/listFactorRiesgos';
-const baseUrl5 = 'http://192.168.1.6:4000/Bitacorapp/addBitacora';
+const baseUrl = 'http://192.168.1.9:4000/Bitacorapp/addPlataforma';
+const baseUrl1 = 'http://192.168.1.9:4000/Bitacorapp/listEventos';
+const baseUrl2 = 'http://192.168.1.9:4000/Bitacorapp/listUsuarios';
+const baseUrl3 = 'http://192.168.1.9:4000/Bitacorapp/listProveedores';
+const baseUrl4 = 'http://192.168.1.9:4000/Bitacorapp/listFactorRiesgos';
+const baseUrl5 = 'http://192.168.1.9:4000/Bitacorapp/addBitacora';
 
 
-const estado = [
+const estados = [
   {
     label: 'En espera',
     value: 'En espera',
@@ -46,15 +47,24 @@ export default class App extends Component {
 
   constructor(props) {
     super(props);
+    //this.addBitacora = this.addBitacora.bind(this); 
 
     this.inputRefs = {
 
       favSport1: null,
+      plataformaId:null,
+      eventoId:null,
+      userId:null,
+      atendioid:null,
+      proveedorId:null,
+      factorRiesgoId:null,
+      estado:null
 
     };
 
     var today = new Date;
     var hour = new Date;
+   
     this.state = {
       listP: [],
       listE: [],
@@ -62,19 +72,20 @@ export default class App extends Component {
       listPro: [],
       listF: [],
 
-      date: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
-      date2: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
-
-
-      plataforma: undefined,
-      evento: undefined,
+      fechaDeIncidencia: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
+       horaDeIncidencia: hour.getHours() + ':' + hour.getMinutes(), 
+      plataformaId: undefined,
+      eventoId: undefined,
+      descripcion:'',
       userId: undefined,
       atendioid: undefined,
-      proveedoresId: undefined,
+      proveedorId: undefined,
+      fechaSolucion: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
+      horaSolucion: hour.getHours() + ':' + hour.getMinutes(),
       factorRiesgoId: undefined,
       estado: undefined,
-      dt: hour.getHours() + ':' + hour.getMinutes(),
-      dt2: hour.getHours() + ':' + hour.getMinutes()
+      
+      
 
 
     };
@@ -87,6 +98,7 @@ export default class App extends Component {
     this.getUsuarios();
     this.getProveedores();
     this.getFactorRiesgo();
+
   }
 
   async getPlataforma() {
@@ -143,10 +155,90 @@ export default class App extends Component {
     }
   }
 
+  async addBitacora() {
+
+    if (this.state.fechaDeIncidencia === null ) {
+      alert("Ingrese la fecha de incidencia, por favor.");
+    }
+    if(this.state.horaDeIncidencia === null) {
+      alert("Ingrese la hora de incidencia, por favor.");
+    }
+    if(this.state.plataformaId === null) {
+      alert("Ingrese la plataforma, por favor.");
+    }
+    if(this.state.eventoId === null) {
+      alert("Ingrese el evento, por favor.");
+    }
+    if(this.state.descripcion === '') {
+      alert("Ingrese la descripcion, por favor.");
+    }
+    if(this.state.userId === undefined) {
+      alert("Ingrese el usuario reportó, por favor.");
+    }
+    if(this.state.atendioid === null) {
+      alert("Ingrese el usuario atendio, por favor.");
+    }
+    if(this.state.proveedorId === null) {
+      alert("Ingrese el proveedor, por favor.");
+    }
+    if(this.state.fechaSolucion === null) {
+      alert("Ingrese la fecha solucion, por favor.");
+    }
+    if(this.state.horaSolucion === null) {
+      alert("Ingrese la hora de solucion, por favor.");
+    }
+    if(this.state.estado === undefined) {
+      alert("Ingrese el estado, por favor.");
+    }
+    if(this.state.fechaSolucion === null) {
+      alert("Ingrese la fecha de solucion, por favor.");
+    }
+    if(this.state.factorRiesgoId === null) {
+      alert("Ingrese el factor de riesgo, por favor.");
+    }
+    else {
+  
+    try{
+      const { fechaDeIncidencia,
+        horaDeIncidencia,
+         plataformaId,
+         eventoId,
+         descripcion,
+         userId,
+         atendioid,
+         proveedorId,
+         fechaSolucion,
+         horaSolucion,
+         estado,
+         factorRiesgoId} = this.state;
+      const response = await axios.post(baseUrl5, { fechaDeIncidencia,
+        horaDeIncidencia,
+        plataformaId,
+        eventoId,
+        descripcion,
+        userId,
+        atendioid,
+        proveedorId,
+       fechaSolucion,
+       horaSolucion,
+        estado,
+        factorRiesgoId});
+      const { data } = response;  
+      console.log(data);
+      
+      this.props.navigation.navigate("BitacoraList");
+    
+    }catch(error){
+      console.error(error);
+    }
+  }
+  }
+  
+
 
 
   render() {
-    console.log(this.state.fecha);
+   
     const placeholder1 = {
       label: 'Plataforma',
       value: null,
@@ -186,7 +278,9 @@ export default class App extends Component {
     const { listE } = this.state;
     const { listU } = this.state;
     const { listPro } = this.state;
-    const { listF } = this.state;
+    const { listF,plataformaId } = this.state;
+  
+
 
 
     const plataforma = [];
@@ -246,7 +340,7 @@ export default class App extends Component {
           <Text>Fecha de incidencia</Text>
           <DatePicker
             style={{ width: 200, background: "rgb(170, 224, 112)", }}
-            date={this.state.date}
+            date={this.state.fechaDeIncidencia}
             mode="date"
             placeholder="select date"
             format="YYYY-MM-DD"
@@ -267,7 +361,8 @@ export default class App extends Component {
               }
               // ... You can check the source to find the other keys.
             }}
-            onDateChange={(date) => { this.setState({ date: date }) }}
+           // onDateChange={date => this.state.fechaDeIncidencia= date }
+            onDateChange={(date) => { this.setState({...this.state,fechaDeIncidencia: date }) }}
 
           />
           <Text></Text>
@@ -279,12 +374,9 @@ export default class App extends Component {
             options={{
               format: "HH:mm",
             }}
-            value={this.state.dt}
-            onChangeText={(text) => {
-              this.setState({
-                dt: text,
-              });
-            }}
+            value={this.state.horaDeIncidencia}
+           // onChangeText={(text) =>(this.state.horaDeIncidencia=text)}
+            onChangeText={(text) => { this.setState({...this.state,horaDeIncidencia: text});}}
           />
 
           <Text></Text>
@@ -293,17 +385,13 @@ export default class App extends Component {
             placeholder={placeholder1}
 
             items={plataforma}
-            onValueChange={value => {
-              this.setState({
-                plataforma: value,
-              });
-            }}
+          //  onValueChange={value =>this.state.plataformaId=value },
+            onValueChange={(plataformaId) => this.setState({...this.state, plataformaId:plataformaId })}
+            
             style={pickerSelectStyles}
-            value={this.state.plataforma}
+           // value={plataformaId}
             useNativeAndroidPickerStyle={false}
-            ref={el => {
-              this.inputRefs.plataforma = el;
-            }}
+           
           />
           <Text></Text>
           <Text>Eventos</Text>
@@ -311,26 +399,32 @@ export default class App extends Component {
             placeholder={placeholder2}
 
             items={Eventos}
+          //  onValueChange={value =>this.state.eventoId=value }
             onValueChange={value => {
               this.setState({
-                evento: value,
+                ...this.state, eventoId: value,
               });
             }}
             style={pickerSelectStyles}
-            value={this.state.evento}
+            //value={this.state.eventoId}
             useNativeAndroidPickerStyle={false}
-            ref={el => {
-              this.inputRefs.evento = el;
-            }}
+           
           />
           <Text></Text>
 
           <Text>Descripción</Text>
-          <TextInput
-            placeholder="Descripción..."
-            onChangeText={(value) => handleChangeText(value, "descripcion")}
-          //   value={state.name}
-          />
+          
+           <TextInput
+          placeholder="Descripción..."
+          multiline={true}
+          numberOfLines={4}
+         // onChangeText={(value) =>(this.state.descripcion=value )}
+          onChangeText={value => {
+            this.setState({
+              ...this.state,  descripcion: value,
+            });
+          }}
+        />
           <Text></Text>
 
           <Text>Empleado reportó</Text>
@@ -338,17 +432,16 @@ export default class App extends Component {
             placeholder={placeholder3}
 
             items={Usuarios}
+           // onValueChange={value =>this.state.userId=value }
             onValueChange={value => {
               this.setState({
-                userId: value,
+                ...this.state,  userId: value,
               });
             }}
             style={pickerSelectStyles}
-            value={this.state.userId}
+            ///value={this.state.userId}
             useNativeAndroidPickerStyle={false}
-            ref={el => {
-              this.inputRefs.userId = el;
-            }}
+            
           />
           <Text></Text>
 
@@ -357,17 +450,16 @@ export default class App extends Component {
             placeholder={placeholder4}
 
             items={Usuarios}
+          //  onValueChange={value =>this.state.atendioid=value }
             onValueChange={value => {
               this.setState({
-                atendioid: value,
+                ...this.state,  atendioid: value,
               });
             }}
             style={pickerSelectStyles}
-            value={this.state.atendioid}
+          //  value={this.state.atendioid}
             useNativeAndroidPickerStyle={false}
-            ref={el => {
-              this.inputRefs.atendioid = el;
-            }}
+            
           />
 
           <Text></Text>
@@ -376,23 +468,22 @@ export default class App extends Component {
             placeholder={placeholder5}
 
             items={Proveedores}
+           // onValueChange={value =>this.state.proveedorId=value }
             onValueChange={value => {
               this.setState({
-                proveedoresId: value,
+                ...this.state, proveedorId: value,
               });
             }}
             style={pickerSelectStyles}
-            value={this.state.proveedoresId}
+           // value={this.state.proveedorId}
             useNativeAndroidPickerStyle={false}
-            ref={el => {
-              this.inputRefs.proveedoresId = el;
-            }}
+           
           />
           <Text></Text>
           <Text>Fecha de solucion </Text>
           <DatePicker
             style={{ width: 200, background: "rgb(170, 224, 112)", }}
-            date={this.state.date2}
+            date={this.state.fechaSolucion}
             mode="date"
             placeholder="select date"
             format="YYYY-MM-DD"
@@ -413,7 +504,9 @@ export default class App extends Component {
               }
               // ... You can check the source to find the other keys.
             }}
-            onDateChange={(date2) => { this.setState({ date2: date2 }) }}
+            
+            onDateChange={(date) => { this.setState({...this.state, fechaSolucion: date }) }}
+          
           />
           <Text></Text>
                <Text>Hora solucion</Text>
@@ -424,12 +517,9 @@ export default class App extends Component {
             options={{
               format: "HH:mm",
             }}
-            value={this.state.dt2}
-            onChangeText={(text) => {
-              this.setState({
-                dt: text,
-              });
-            }}
+            value={this.state.horaSolucion}
+           
+            onChangeText={(text) => {this.setState({...this.state,horaSolucion: text}); }}
           />
 
           <Text></Text>
@@ -437,18 +527,17 @@ export default class App extends Component {
           <RNPickerSelect
             placeholder={placeholderEstado}
 
-            items={estado}
+            items={estados}
+            //onValueChange={value =>this.state.estado=value }
             onValueChange={value => {
               this.setState({
-                estado: value,
+                ...this.state,estado: value,
               });
             }}
             style={pickerSelectStyles}
-            value={this.state.estado}
+          //  value={this.state.estado}
             useNativeAndroidPickerStyle={false}
-            ref={el => {
-              this.inputRefs.estado = el;
-            }}
+           
           />
           <Text></Text>
           <Text>Factores de riesgo</Text>
@@ -456,23 +545,28 @@ export default class App extends Component {
             placeholder={placeholder6}
 
             items={FactorRiesgos}
+            //onValueChange={value =>this.state.factorRiesgoId=value }
             onValueChange={value => {
               this.setState({
-                factorRiesgoId: value,
+                ...this.state,  factorRiesgoId: value,
               });
             }}
             style={pickerSelectStyles}
-            value={this.state.factorRiesgoId}
+           // value={this.state.factorRiesgoId}
             useNativeAndroidPickerStyle={false}
-            ref={el => {
-              this.inputRefs.factorRiesgoId = el;
-            }}
+            
           />
 
           <View paddingVertical={5} />
-          <View style={styles.button}>
-            <Button title="Guardar" onPress={() => saveNewUser()} />
-          </View>
+         
+        <View style={styles.button}>
+        
+        <Button
+        background-color= "rgb(170, 224, 112)"
+        border-color=  "rgb(170, 224, 112)"
+        color=  "rgb(35, 148, 0)"
+         title="Guardar" onPress={() => this.addBitacora()} />
+      </View>
 
         </ScrollView>
       </View>

@@ -10,7 +10,7 @@ import axios from 'axios';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-const baseUrl = 'http://192.168.1.6:4000/Bitacorapp/list'; 
+const baseUrl = 'http://192.168.1.9:4000/Bitacorapp/list'; 
 class list extends Component {
   
   constructor() {
