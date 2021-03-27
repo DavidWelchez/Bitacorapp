@@ -66,19 +66,20 @@ class list extends Component {
           background-color= "rgb(170, 224, 112)"
           border-color=  "rgb(170, 224, 112)"
           color=  "rgb(35, 148, 0)"
-            onPress={() =>  this.props.navigation.navigate("BitacoraDetails")}
+            onPress={() =>  this.props.navigation.navigate("BitacoraAdd")}
             title="Nuevo"
           />
           {list.map((bitacora) => {
             return (
+              
               <ListItem
                 key={bitacora.id}
                 bottomDivider
-                // onPress={() => {
-                //   props.navigation.navigate("UserDetailScreen", {
-                //     userId: user.id,
-                //   });
-                // }}
+                onPress={() => {
+                  this.props.navigation.navigate("BitacoraDetails", {
+                    bitacoraId: bitacora.id,
+                  });
+                }}
               >
                 <ListItem.Chevron />
                

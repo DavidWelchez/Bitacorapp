@@ -17,12 +17,15 @@ import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
 import axios from 'axios';
 import DatePicker from 'react-native-datepicker';
 import { TextInputMask } from "react-native-masked-text";
+
 const baseUrl = 'http://192.168.1.9:4000/Bitacorapp/addPlataforma';
 const baseUrl1 = 'http://192.168.1.9:4000/Bitacorapp/listEventos';
 const baseUrl2 = 'http://192.168.1.9:4000/Bitacorapp/listUsuarios';
 const baseUrl3 = 'http://192.168.1.9:4000/Bitacorapp/listProveedores';
 const baseUrl4 = 'http://192.168.1.9:4000/Bitacorapp/listFactorRiesgos';
 const baseUrl5 = 'http://192.168.1.9:4000/Bitacorapp/addBitacora';
+
+
 
 
 const estados = [
@@ -52,61 +55,101 @@ export default class App extends Component {
     this.inputRefs = {
 
       favSport1: null,
-      plataformaId:null,
-      eventoId:null,
-      userId:null,
-      atendioid:null,
-      proveedorId:null,
-      factorRiesgoId:null,
-      estado:null
+      plataformaId: null,
+      eventoId: null,
+      userId: null,
+      atendioid: null,
+      proveedorId: null,
+      factorRiesgoId: null,
+      estado: null
 
     };
 
     var today = new Date;
     var hour = new Date;
-   
+    const bitacoraid = props.route.params.bitacoraId;
     this.state = {
+      listBitacora: [],
       listP: [],
       listE: [],
       listU: [],
       listPro: [],
       listF: [],
 
-      fechaDeIncidencia: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
-       horaDeIncidencia: hour.getHours() + ':' + hour.getMinutes(), 
+      fechaDeIncidencia: undefined,
+      horaDeIncidencia: undefined,
       plataformaId: undefined,
       eventoId: undefined,
-      descripcion:'',
+      descripcion: undefined,
       userId: undefined,
       atendioid: undefined,
       proveedorId: undefined,
-      fechaSolucion: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
-      horaSolucion: hour.getHours() + ':' + hour.getMinutes(),
+      fechaSolucion: undefined,
+      horaSolucion: undefined,
       factorRiesgoId: undefined,
       estado: undefined,
-      
-      
 
+      bitacoraid: props.route.params.bitacoraId,
+      
+      empty: {},
 
     };
 
   }
 
-  componentDidMount() {
-    this.getPlataforma();
-    this.getEventos();
-    this.getUsuarios();
-    this.getProveedores();
-    this.getFactorRiesgo();
+  async componentDidMount() {
+    await this.getBitacora();
+    await this.getPlataforma();
+   await this.getEventos();
+   await this.getUsuarios();
+   await this.getProveedores();
+   await this.getFactorRiesgo();
+    
+
 
   }
 
+  async getBitacora() {
+
+    try {
+      const response = await axios.get('http://192.168.1.9:4000/Bitacorapp/edit/' + this.state.bitacoraid);
+      const { data } = response;
+      this.setState({...this.state, listBitacora: data });
+      console.log(data);
+
+      this.state.listBitacora.map((bitacora) => {
+        this.setState({ ...this.state, fechaDeIncidencia: bitacora.fechaDeIncidencia })
+        this.setState({ ...this.state, horaDeIncidencia: bitacora.horaDeIncidencia })
+        this.setState({ ...this.state, descripcion: bitacora.descripcion })
+        this.setState({ ...this.state, fechaSolucion: bitacora.fechaSolucion })
+        this.setState({ ...this.state, horaSolucion: bitacora.horaSolucion })
+        this.setState({ ...this.state, estado: bitacora.estado })
+        // this.setState({ ...this.state, plataformaId: bitacora.plataforma })
+        // console.log(this.state.plataformaId);
+      })
+      
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
   async getPlataforma() {
     try {
       const response = await axios.get(baseUrl);
       const { data } = response;
       this.setState({ listP: data });
-      console.log(data);
+     
+      this.state.listP.map((plataformas) => {  
+      this.state.listBitacora.map((bitacora) => {
+        
+        if (bitacora.plataformaId == plataformas.id ) {
+          this.setState({ ...this.state, plataformaId: plataformas.id})
+          console.log("plataforma")
+        } 
+      
+      })
+    })
+    
     } catch (error) {
       console.error(error);
     }
@@ -116,7 +159,16 @@ export default class App extends Component {
       const response = await axios.get(baseUrl1);
       const { data } = response;
       this.setState({ listE: data });
-      console.log(data);
+
+      this.state.listE.map((eventos) => {
+        this.state.listBitacora.map((bitacora) => {
+          if (bitacora.eventoId == eventos.id) {
+            this.setState({ ...this.state, eventoId: eventos.id })
+            console.log("evento")
+          } 
+        })
+        })
+      // console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -127,7 +179,19 @@ export default class App extends Component {
       const response = await axios.get(baseUrl2);
       const { data } = response;
       this.setState({ listU: data });
-      console.log(data);
+      this.state.listU.map((usuarios) => {
+        this.state.listBitacora.map((bitacora) => {
+          if (bitacora.userId == usuarios.id) {
+            this.setState({ ...this.state, userId: usuarios.id })
+            console.log("reporto")
+          }
+          if (bitacora.atendioid == usuarios.id) {
+            this.setState({ ...this.state, atendioid: usuarios.id })
+            console.log("atendio")
+          }
+        })
+      })
+      // console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -138,7 +202,16 @@ export default class App extends Component {
       const response = await axios.get(baseUrl3);
       const { data } = response;
       this.setState({ listPro: data });
-      console.log(data);
+      this.state.listPro.map((proveedores) => {
+        this.state.listBitacora.map((bitacora) => {
+          if (bitacora.proveedorId == proveedores.id) {
+            this.setState({ ...this.state, proveedorId: proveedores.id })
+            console.log("proveedor")
+          } 
+        })
+       
+      })
+      // console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -149,184 +222,252 @@ export default class App extends Component {
       const response = await axios.get(baseUrl4);
       const { data } = response;
       this.setState({ listF: data });
-      console.log(data);
+      this.state.listF.map((factorRiesgos) => {
+        this.state.listBitacora.map((bitacora) => {
+          if (bitacora.factorRiesgoId == factorRiesgos.id) {
+            this.setState({ ...this.state, factorRiesgoId: factorRiesgos.id })
+            console.log("factor")
+          } 
+        })
+       
+      })
+      // console.log(data);
     } catch (error) {
       console.error(error);
     }
   }
 
-  async addBitacora() {
+  async EditBitacora() {
 
-    if (this.state.fechaDeIncidencia === null ) {
+    if (this.state.fechaDeIncidencia === null) {
       alert("Ingrese la fecha de incidencia, por favor.");
     }
-    if(this.state.horaDeIncidencia === null) {
+    if (this.state.horaDeIncidencia === null) {
       alert("Ingrese la hora de incidencia, por favor.");
     }
-    if(this.state.plataformaId === null) {
+    if (this.state.plataformaId === null) {
       alert("Ingrese la plataforma, por favor.");
     }
-    if(this.state.eventoId === null) {
+    if (this.state.eventoId === null) {
       alert("Ingrese el evento, por favor.");
     }
-    if(this.state.descripcion === '') {
+    if (this.state.descripcion === '') {
       alert("Ingrese la descripcion, por favor.");
     }
-    if(this.state.userId === undefined) {
+    if (this.state.userId === undefined) {
       alert("Ingrese el usuario reportó, por favor.");
     }
-    if(this.state.atendioid === null) {
+    if (this.state.atendioid === null) {
       alert("Ingrese el usuario atendio, por favor.");
     }
-    if(this.state.proveedorId === null) {
+    if (this.state.proveedorId === null) {
       alert("Ingrese el proveedor, por favor.");
     }
-    if(this.state.fechaSolucion === null) {
+    if (this.state.fechaSolucion === null) {
       alert("Ingrese la fecha solucion, por favor.");
     }
-    if(this.state.horaSolucion === null) {
+    if (this.state.horaSolucion === null) {
       alert("Ingrese la hora de solucion, por favor.");
     }
-    if(this.state.estado === undefined) {
+    if (this.state.estado === undefined) {
       alert("Ingrese el estado, por favor.");
     }
-    if(this.state.fechaSolucion === null) {
+    if (this.state.fechaSolucion === null) {
       alert("Ingrese la fecha de solucion, por favor.");
     }
-    if(this.state.factorRiesgoId === null) {
+    if (this.state.factorRiesgoId === null) {
       alert("Ingrese el factor de riesgo, por favor.");
     }
     else {
-  
-    try{
-      const { fechaDeIncidencia,
-        horaDeIncidencia,
-         plataformaId,
-         eventoId,
-         descripcion,
-         userId,
-         atendioid,
-         proveedorId,
-         fechaSolucion,
-         horaSolucion,
-         estado,
-         factorRiesgoId} = this.state;
-      const response = await axios.post(baseUrl5, { fechaDeIncidencia,
-        horaDeIncidencia,
-        plataformaId,
-        eventoId,
-        descripcion,
-        userId,
-        atendioid,
-        proveedorId,
-       fechaSolucion,
-       horaSolucion,
-        estado,
-        factorRiesgoId});
-      const { data } = response;  
-      console.log(data);
-      
-      this.props.navigation.navigate("BitacoraList");
-    
-    }catch(error){
-      console.error(error);
+ console.log(this.state.eventoId);
+      try {
+        const { fechaDeIncidencia,
+          horaDeIncidencia,
+          plataformaId,
+          eventoId,
+          descripcion,
+          userId,
+          atendioid,
+          proveedorId,
+          fechaSolucion,
+          horaSolucion,
+          estado,
+          factorRiesgoId } = this.state;
+        const response = await axios.post('http://192.168.1.9:4000/Bitacorapp/edit/' + this.state.bitacoraid, 
+        {
+          fechaDeIncidencia,
+          horaDeIncidencia,
+          plataformaId,
+          eventoId,
+          descripcion,
+          userId,
+          atendioid,
+          proveedorId,
+          fechaSolucion,
+          horaSolucion,
+          estado,
+          factorRiesgoId
+        });
+        const { data } = response;
+        // console.log(data);
+
+        this.props.navigation.navigate("BitacoraList");
+
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
-  }
-  
+
 
 
 
   render() {
-   
-    const placeholder1 = {
-      label: 'Plataforma',
-      value: null,
-      color: '#9EA0A4',
-    };
-    const placeholder2 = {
-      label: 'Evento',
-      value: null,
-      color: '#9EA0A4',
-    };
-    const placeholder3 = {
-      label: 'Empleado reportó',
-      value: null,
-      color: '#9EA0A4',
-    };
-    const placeholder4 = {
-      label: 'Empleado atendió',
-      value: null,
-      color: '#9EA0A4',
-    };
-    const placeholder5 = {
-      label: 'Proveedor',
-      value: null,
-      color: '#9EA0A4',
-    };
-    const placeholder6 = {
-      label: 'Factor de riesgo',
-      value: null,
-      color: '#9EA0A4',
-    };
-    const placeholderEstado = {
-      label: 'Estado',
-      value: null,
-      color: '#9EA0A4',
-    };
-    const { listP } = this.state;
-    const { listE } = this.state;
-    const { listU } = this.state;
-    const { listPro } = this.state;
-    const { listF,plataformaId } = this.state;
-  
-
-
 
     const plataforma = [];
     const Eventos = [];
     const Usuarios = [];
+    const UsuariosA = [];
+
     const Proveedores = [];
     const FactorRiesgos = [];
+    
+
+
+
 
     this.state.listP.map((plataformas) => {
-      plataforma.push({
-        label: plataformas.plataforma,
-        value: plataformas.id
-      })
+      this.state.listBitacora.map((bitacora) => {
+        if (bitacora.plataformaId == plataformas.id ) {
+          plataforma.push({
+       
+            label: plataformas.plataforma,
+            value: plataformas.id,
+    
+            
+          })
+        }
+     
     })
-
+ 
+    })
+    this.state.listP.map((plataformas) => {
+      this.state.listBitacora.map((bitacora) => {
+        if (bitacora.plataformaId != plataformas.id ) {
+          plataforma.push({
+       
+            label: plataformas.plataforma,
+            value: plataformas.id,
+    
+            
+          })
+        }
+     
+    })
+ 
+    })
     this.state.listE.map((eventos) => {
-      Eventos.push({
-        label: eventos.evento,
-        value: eventos.id
+      this.state.listBitacora.map((bitacora) => {
+        if (bitacora.eventoId == eventos.id) {
+          Eventos.push({
+            label: eventos.evento,
+            value: eventos.id
+          })
+        } 
       })
-    })
-
-    this.state.listU.map((usuarios) => {
-      Usuarios.push({
-        label: usuarios.fullname,
-        value: usuarios.id
       })
-    })
+      this.state.listE.map((eventos) => {
+        this.state.listBitacora.map((bitacora) => {
+          if (bitacora.eventoId != eventos.id) {
+            Eventos.push({
+              label: eventos.evento,
+              value: eventos.id
+            })
+          } 
+        })
+        })
+   
+        this.state.listU.map((usuarios) => {
+          this.state.listBitacora.map((bitacora) => {
+            if (bitacora.userId == usuarios.id) {
+              Usuarios.push({
+                label: usuarios.fullname,
+                value: usuarios.id
+              })
+            }
+            if (bitacora.atendioid == usuarios.id) {
+              UsuariosA.push({
+                label: usuarios.fullname,
+                value: usuarios.id
+              })
+            }
+          })
+        })
+        this.state.listU.map((usuarios) => {
+          this.state.listBitacora.map((bitacora) => {
+            if (bitacora.userId != usuarios.id) {
+              Usuarios.push({
+                label: usuarios.fullname,
+                value: usuarios.id
+              })
+            }
+            if (bitacora.atendioid != usuarios.id) {
+              UsuariosA.push({
+                label: usuarios.fullname,
+                value: usuarios.id
+              })
+            }
+          })
+        })
+    
+        this.state.listPro.map((proveedores) => {
+          this.state.listBitacora.map((bitacora) => {
+            if (bitacora.proveedorId == proveedores.id) {
+              Proveedores.push({
+                label: proveedores.proveedor,
+                value: proveedores.id
+              })
+            } 
+          })
+         
+        })
+        this.state.listPro.map((proveedores) => {
+          this.state.listBitacora.map((bitacora) => {
+            if (bitacora.proveedorId != proveedores.id) {
+              Proveedores.push({
+                label: proveedores.proveedor,
+                value: proveedores.id
+              })
+            } 
+          })
+         
+        })
 
-    this.state.listPro.map((proveedores) => {
-      Proveedores.push({
-        label: proveedores.proveedor,
-        value: proveedores.id
-      })
-    })
-    this.state.listF.map((factorRiesgos) => {
-      FactorRiesgos.push({
-        label: factorRiesgos.factor,
-        value: factorRiesgos.id
-      })
-    })
+        this.state.listF.map((factorRiesgos) => {
+          this.state.listBitacora.map((bitacora) => {
+            if (bitacora.factorRiesgoId == factorRiesgos.id) {
+              FactorRiesgos.push({
+                label: factorRiesgos.factor,
+                value: factorRiesgos.id
+              })
+            } 
+          })
+         
+        })
+        this.state.listF.map((factorRiesgos) => {
+          this.state.listBitacora.map((bitacora) => {
+            if (bitacora.factorRiesgoId != factorRiesgos.id) {
+              FactorRiesgos.push({
+                label: factorRiesgos.factor,
+                value: factorRiesgos.id
+              })
+            } 
+          })
+         
+        })
+   
 
-
-
-
-
+   
 
     return (
 
@@ -361,123 +502,128 @@ export default class App extends Component {
               }
               // ... You can check the source to find the other keys.
             }}
-           // onDateChange={date => this.state.fechaDeIncidencia= date }
-            onDateChange={(date) => { this.setState({...this.state,fechaDeIncidencia: date }) }}
+            // onDateChange={date => this.state.fechaDeIncidencia= date }
+            onDateChange={(date) => { this.setState({ ...this.state, fechaDeIncidencia: date }) }}
 
           />
           <Text></Text>
           <Text>Hora incidencia</Text>
           <TextInputMask
             placeholder="00:00"
-            
+
             type={"datetime"}
             options={{
               format: "HH:mm",
             }}
             value={this.state.horaDeIncidencia}
-           // onChangeText={(text) =>(this.state.horaDeIncidencia=text)}
-            onChangeText={(text) => { this.setState({...this.state,horaDeIncidencia: text});}}
+            // onChangeText={(text) =>(this.state.horaDeIncidencia=text)}
+            onChangeText={(text) => { this.setState({ ...this.state, horaDeIncidencia: text }); }}
           />
 
           <Text></Text>
+          
           <Text>Plataforma</Text>
           <RNPickerSelect
-            placeholder={placeholder1}
-
+         placeholder={this.state.empty}
+        // itemKey={this.state.plataformaId}
+       // value= {this.state.plataformaId}
             items={plataforma}
-          //  onValueChange={value =>this.state.plataformaId=value },
-            onValueChange={(plataformaId) => this.setState({...this.state, plataformaId:plataformaId })}
-            
-            style={pickerSelectStyles}
-           // value={plataformaId}
-            useNativeAndroidPickerStyle={false}
-           
-          />
-          <Text></Text>
-          <Text>Eventos</Text>
-          <RNPickerSelect
-            placeholder={placeholder2}
+            //  onValueChange={value =>this.state.plataformaId=value },
+            onValueChange={(value) => this.setState({ ...this.state, plataformaId: value })}
 
+            style={pickerSelectStyles}
+            // value={plataformaId}
+            useNativeAndroidPickerStyle={false}
+
+          />
+          
+          <Text>Eventos</Text>
+          
+          <RNPickerSelect
+            placeholder={this.state.empty}
+            // value={this.state.eventoId}
             items={Eventos}
-          //  onValueChange={value =>this.state.eventoId=value }
-            onValueChange={value => {
+            //  onValueChange={value =>this.state.eventoId=value }
+           
+            onValueChange={eventoId => {
               this.setState({
-                ...this.state, eventoId: value,
+                ...this.state, eventoId: eventoId,
               });
             }}
             style={pickerSelectStyles}
             //value={this.state.eventoId}
             useNativeAndroidPickerStyle={false}
-           
+
           />
           <Text></Text>
 
           <Text>Descripción</Text>
-          
-           <TextInput
-          placeholder="Descripción..."
-          multiline={true}
-          numberOfLines={4}
-         // onChangeText={(value) =>(this.state.descripcion=value )}
-          onChangeText={value => {
-            this.setState({
-              ...this.state,  descripcion: value,
-            });
-          }}
-        />
+
+          <TextInput
+            placeholder="Descripción..."
+            value={this.state.descripcion}
+            multiline={true}
+            numberOfLines={4}
+            // onChangeText={(value) =>(this.state.descripcion=value )}
+            onChangeText={value => {
+              this.setState({
+                ...this.state, descripcion: value,
+              });
+            }}
+          />
           <Text></Text>
 
           <Text>Empleado reportó</Text>
           <RNPickerSelect
-            placeholder={placeholder3}
-
+            placeholder={this.state.empty}
+             value={this.state.userId}
             items={Usuarios}
-           // onValueChange={value =>this.state.userId=value }
+            // onValueChange={value =>this.state.userId=value }
             onValueChange={value => {
               this.setState({
-                ...this.state,  userId: value,
+                ...this.state, userId: value,
               });
             }}
             style={pickerSelectStyles}
             ///value={this.state.userId}
             useNativeAndroidPickerStyle={false}
-            
+
           />
           <Text></Text>
 
           <Text>Empleado atendió</Text>
           <RNPickerSelect
-            placeholder={placeholder4}
-
-            items={Usuarios}
-          //  onValueChange={value =>this.state.atendioid=value }
+            placeholder={this.state.empty}
+            value={this.state.atendioid}
+            items={UsuariosA}
+            //  onValueChange={value =>this.state.atendioid=value }
             onValueChange={value => {
               this.setState({
-                ...this.state,  atendioid: value,
+                ...this.state, atendioid: value,
               });
             }}
             style={pickerSelectStyles}
-          //  value={this.state.atendioid}
+            //  value={this.state.atendioid}
             useNativeAndroidPickerStyle={false}
-            
+
           />
 
           <Text></Text>
           <Text>Proveedores</Text>
           <RNPickerSelect
-            placeholder={placeholder5}
-
+            placeholder={this.state.empty}
+             value={this.state.proveedorId}
             items={Proveedores}
-           // onValueChange={value =>this.state.proveedorId=value }
+            // onValueChange={value =>this.state.proveedorId=value }
             onValueChange={value => {
               this.setState({
                 ...this.state, proveedorId: value,
               });
             }}
             style={pickerSelectStyles}
-           // value={this.state.proveedorId}
+            // value={this.state.proveedorId}
             useNativeAndroidPickerStyle={false}
-           
+
           />
           <Text></Text>
           <Text>Fecha de solucion </Text>
@@ -504,69 +650,69 @@ export default class App extends Component {
               }
               // ... You can check the source to find the other keys.
             }}
-            
-            onDateChange={(date) => { this.setState({...this.state, fechaSolucion: date }) }}
-          
+
+            onDateChange={(date) => { this.setState({ ...this.state, fechaSolucion: date }) }}
+
           />
           <Text></Text>
-               <Text>Hora solucion</Text>
+          <Text>Hora solucion</Text>
           <TextInputMask
             placeholder="00:00"
-            
+
             type={"datetime"}
             options={{
               format: "HH:mm",
             }}
             value={this.state.horaSolucion}
-           
-            onChangeText={(text) => {this.setState({...this.state,horaSolucion: text}); }}
+
+            onChangeText={(text) => { this.setState({ ...this.state, horaSolucion: text }); }}
           />
 
           <Text></Text>
           <Text>Estado</Text>
           <RNPickerSelect
-            placeholder={placeholderEstado}
-
+            placeholder={this.state.empty}
+            value={this.state.estado}
             items={estados}
             //onValueChange={value =>this.state.estado=value }
             onValueChange={value => {
               this.setState({
-                ...this.state,estado: value,
+                ...this.state, estado: value,
               });
             }}
             style={pickerSelectStyles}
-          //  value={this.state.estado}
+            //  value={this.state.estado}
             useNativeAndroidPickerStyle={false}
-           
+
           />
           <Text></Text>
           <Text>Factores de riesgo</Text>
           <RNPickerSelect
-            placeholder={placeholder6}
-
+            placeholder={this.state.empty}
+            value={this.state.factorRiesgoId}
             items={FactorRiesgos}
             //onValueChange={value =>this.state.factorRiesgoId=value }
             onValueChange={value => {
               this.setState({
-                ...this.state,  factorRiesgoId: value,
+                ...this.state, factorRiesgoId: value,
               });
             }}
             style={pickerSelectStyles}
-           // value={this.state.factorRiesgoId}
+            // value={this.state.factorRiesgoId}
             useNativeAndroidPickerStyle={false}
-            
+
           />
 
           <View paddingVertical={5} />
-         
-        <View style={styles.button}>
-        
-        <Button
-        background-color= "rgb(170, 224, 112)"
-        border-color=  "rgb(170, 224, 112)"
-        color=  "rgb(35, 148, 0)"
-         title="Guardar" onPress={() => this.addBitacora()} />
-      </View>
+
+          <View style={styles.button}>
+
+            <Button
+              background-color="rgb(170, 224, 112)"
+              border-color="rgb(170, 224, 112)"
+              color="rgb(35, 148, 0)"
+              title="Actualizar" onPress={() => this.EditBitacora()} />
+          </View>
 
         </ScrollView>
       </View>
@@ -630,3 +776,4 @@ const pickerSelectStyles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+

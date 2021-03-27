@@ -10,8 +10,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 // Components
 // import CreateUserScreen from "./screens/CreateUserScreen";
 // import UserDetailScreen from "./screens/UserDetailScreen";
-import BitacoraAdd from "./screens/BitacoraAdd";
+
 import BitacoraList from "./screens/BitacoraList";
+import BitacoraAdd from "./screens/BitacoraAdd";
 import BitacoraDetails from "./screens/BitacoraDetails";
 import Fecha from "./screens/Fecha";
 
