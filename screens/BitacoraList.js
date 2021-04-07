@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Component,useState, useEffect } from 'react';
 import { Button, StyleSheet } from "react-native";
-import { ListItem, Avatar } from "react-native-elements";
+import { ListItem, Avatar, Badge, } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import {  Text, TextInput, TouchableOpacity, View } from 'react-native';
 import axios from 'axios';
@@ -10,7 +10,7 @@ import axios from 'axios';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-const baseUrl = 'http://192.168.1.9:4000/Bitacorapp/list'; 
+const baseUrl = 'http://192.168.3.106:4000/Bitacorapp/list'; 
 class list extends Component {
   
   constructor() {
@@ -21,10 +21,14 @@ class list extends Component {
       // name:'',
       // price:''
     };
+   
   }
 
   componentDidMount(){
     this.getBitacora();
+    this.props.navigation.addListener('focus', () => {
+      this.getBitacora();
+    });
   }
  
   async getBitacora() {
@@ -32,12 +36,12 @@ class list extends Component {
       const response = await axios.get(baseUrl);
       const { data } = response;  
       this.setState({ list:data });
-      console.log(data);
+     
     }catch(error){
       console.error(error);
     }
   }
-
+  
   // async addProduct() {
   //   try{
   //     const { name, price } = this.state;
@@ -69,6 +73,13 @@ class list extends Component {
             onPress={() =>  this.props.navigation.navigate("BitacoraAdd")}
             title="Nuevo"
           />
+          <Button
+          background-color= "rgb(170, 224, 112)"
+          border-color=  "rgb(170, 224, 112)"
+          color=  "rgb(35, 148, 0)"
+            onPress={() =>  this.props.navigation.navigate("Fecha")}
+            title="img"
+          />
           {list.map((bitacora) => {
             return (
               
@@ -81,7 +92,7 @@ class list extends Component {
                   });
                 }}
               >
-                <ListItem.Chevron />
+                <Badge status="success" />
                
                 <ListItem.Content>
                   <ListItem.Title>{bitacora.fechaDeIncidencia}</ListItem.Title>

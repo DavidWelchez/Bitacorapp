@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
+  ActivityIndicator,
   TouchableOpacity,
 
 } from 'react-native';
@@ -17,12 +18,12 @@ import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
 import axios from 'axios';
 import DatePicker from 'react-native-datepicker';
 import { TextInputMask } from "react-native-masked-text";
-const baseUrl = 'http://192.168.1.9:4000/Bitacorapp/addPlataforma';
-const baseUrl1 = 'http://192.168.1.9:4000/Bitacorapp/listEventos';
-const baseUrl2 = 'http://192.168.1.9:4000/Bitacorapp/listUsuarios';
-const baseUrl3 = 'http://192.168.1.9:4000/Bitacorapp/listProveedores';
-const baseUrl4 = 'http://192.168.1.9:4000/Bitacorapp/listFactorRiesgos';
-const baseUrl5 = 'http://192.168.1.9:4000/Bitacorapp/addBitacora';
+const baseUrl =  'http://192.168.3.106:4000/Bitacorapp/listPlataforma';
+const baseUrl1 = 'http://192.168.3.106:4000/Bitacorapp/listEventos';
+const baseUrl2 = 'http://192.168.3.106:4000/Bitacorapp/listUsuarios';
+const baseUrl3 = 'http://192.168.3.106:4000/Bitacorapp/listProveedores';
+const baseUrl4 = 'http://192.168.3.106:4000/Bitacorapp/listFactorRiesgos';
+const baseUrl5 = 'http://192.168.3.106:4000/Bitacorapp/addBitacora';
 
 
 const estados = [
@@ -85,7 +86,7 @@ export default class App extends Component {
       factorRiesgoId: undefined,
       estado: undefined,
       
-      
+      loading:true,
 
 
     };
@@ -98,6 +99,7 @@ export default class App extends Component {
     this.getUsuarios();
     this.getProveedores();
     this.getFactorRiesgo();
+    this.setState({ ...this.state, loading:false })
 
   }
 
@@ -325,7 +327,14 @@ export default class App extends Component {
 
 
 
-
+    
+     if (this.state.loading) {
+          return (
+            <View style={styles.loader}>
+              <ActivityIndicator size="large" color="rgb(35, 148, 0)" />
+            </View>
+          );
+        }
 
 
     return (
@@ -585,6 +594,15 @@ const styles = StyleSheet.create({
   scrollContentContainer: {
     paddingTop: 40,
     paddingBottom: 10,
+  },
+  loader: {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

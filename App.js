@@ -46,23 +46,23 @@ function MyStack() {
         name="BitacoraList"
         component={BitacoraList}
         // options={{   headerTitle: props => <LogoTitle {...props} />, title: 'Bitacorapp' }}
-        options={{ title: "Bitacorapp" }}
+        options={{ title: "BitacorApp" }}
        
       />
       <Stack.Screen
         name="BitacoraAdd"
         component={BitacoraAdd}
-        options={{ title: "Bitacorapp" }}
+        options={{ title: "BitacorApp" }}
       />
       <Stack.Screen
         name="BitacoraDetails"
         component={BitacoraDetails}
-        options={{ title: "Bitacorapp" }}
+        options={{ title: "BitacorApp" }}
       />
       <Stack.Screen
         name="Fecha"
         component={Fecha}
-        options={{ title: "Bitacorapp" }}
+        options={{ title: "BitacorApp" }}
       />
     </Stack.Navigator>
   );

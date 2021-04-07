@@ -9,6 +9,8 @@ import {
   TouchableWithoutFeedback,
   View,
   TouchableOpacity,
+  ActivityIndicator,
+  Alert,
 
 } from 'react-native';
 import React, { Component, useState, useEffect } from 'react';
@@ -18,12 +20,12 @@ import axios from 'axios';
 import DatePicker from 'react-native-datepicker';
 import { TextInputMask } from "react-native-masked-text";
 
-const baseUrl = 'http://192.168.1.9:4000/Bitacorapp/addPlataforma';
-const baseUrl1 = 'http://192.168.1.9:4000/Bitacorapp/listEventos';
-const baseUrl2 = 'http://192.168.1.9:4000/Bitacorapp/listUsuarios';
-const baseUrl3 = 'http://192.168.1.9:4000/Bitacorapp/listProveedores';
-const baseUrl4 = 'http://192.168.1.9:4000/Bitacorapp/listFactorRiesgos';
-const baseUrl5 = 'http://192.168.1.9:4000/Bitacorapp/addBitacora';
+const baseUrl =  'http://192.168.3.106:4000/Bitacorapp/listPlataforma';
+const baseUrl1 = 'http://192.168.3.106:4000/Bitacorapp/listEventos';
+const baseUrl2 = 'http://192.168.3.106:4000/Bitacorapp/listUsuarios';
+const baseUrl3 = 'http://192.168.3.106:4000/Bitacorapp/listProveedores';
+const baseUrl4 = 'http://192.168.3.106:4000/Bitacorapp/listFactorRiesgos';
+const baseUrl5 = 'http://192.168.3.106:4000/Bitacorapp/addBitacora';
 
 
 
@@ -92,6 +94,7 @@ export default class App extends Component {
       bitacoraid: props.route.params.bitacoraId,
       
       empty: {},
+      loading:true,
 
     };
 
@@ -104,7 +107,8 @@ export default class App extends Component {
    await this.getUsuarios();
    await this.getProveedores();
    await this.getFactorRiesgo();
-    
+   this.setState({ ...this.state, loading:false })
+   
 
 
   }
@@ -112,7 +116,7 @@ export default class App extends Component {
   async getBitacora() {
 
     try {
-      const response = await axios.get('http://192.168.1.9:4000/Bitacorapp/edit/' + this.state.bitacoraid);
+      const response = await axios.get('http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid);
       const { data } = response;
       this.setState({...this.state, listBitacora: data });
       console.log(data);
@@ -293,7 +297,7 @@ export default class App extends Component {
           horaSolucion,
           estado,
           factorRiesgoId } = this.state;
-        const response = await axios.post('http://192.168.1.9:4000/Bitacorapp/edit/' + this.state.bitacoraid, 
+        const response = await axios.post('http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid, 
         {
           fechaDeIncidencia,
           horaDeIncidencia,
@@ -319,8 +323,33 @@ export default class App extends Component {
     }
   }
 
+   DeleteBitacora() {
 
+      try {
+        this.setState({ ...this.state, loading:true })
+         axios.post('http://192.168.3.106:4000/Bitacorapp/delete/' + this.state.bitacoraid);
+       console.log('regresar');
+       this.setState({ ...this.state, loading:false })
+        this.props.navigation.navigate("BitacoraList");
+        
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    openConfirmationAlert = () => {
 
+      Alert.alert(
+        "Eliminar bitacora",
+        "Esta seguro?",
+        [
+          { text: "Si", onPress: () => this.DeleteBitacora() },
+          { text: "No", onPress: () => console.log("canceled") },
+        ],
+        {
+          cancelable: true,
+        }
+      );
+    };
 
   render() {
 
@@ -466,7 +495,13 @@ export default class App extends Component {
          
         })
    
-
+        if (this.state.loading) {
+          return (
+            <View style={styles.loader}>
+              <ActivityIndicator size="large" color="rgb(35, 148, 0)" />
+            </View>
+          );
+        }
    
 
     return (
@@ -713,6 +748,15 @@ export default class App extends Component {
               color="rgb(35, 148, 0)"
               title="Actualizar" onPress={() => this.EditBitacora()} />
           </View>
+          <Text></Text>
+          <View style={styles.button}>
+
+            <Button
+              background-color="rgb(170, 224, 112)"
+              border-color="rgb(170, 224, 112)"
+              color="#cc0000"
+              title="Eliminar" onPress={() => this.openConfirmationAlert()} />
+          </View>
 
         </ScrollView>
       </View>
@@ -731,6 +775,15 @@ const styles = StyleSheet.create({
   scrollContentContainer: {
     paddingTop: 40,
     paddingBottom: 10,
+  },
+  loader: {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
