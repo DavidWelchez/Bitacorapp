@@ -27,6 +27,12 @@ const baseUrl3 = 'http://192.168.3.106:4000/Bitacorapp/listProveedores';
 const baseUrl4 = 'http://192.168.3.106:4000/Bitacorapp/listFactorRiesgos';
 const baseUrl5 = 'http://192.168.3.106:4000/Bitacorapp/addBitacora';
 
+// const baseUrl =  'http://192.168.1.18:4000/Bitacorapp/listPlataforma';
+// const baseUrl1 = 'http://192.168.1.18:4000/Bitacorapp/listEventos';
+// const baseUrl2 = 'http://192.168.1.18:4000/Bitacorapp/listUsuarios';
+// const baseUrl3 = 'http://192.168.1.18:4000/Bitacorapp/listProveedores';
+// const baseUrl4 = 'http://192.168.1.18:4000/Bitacorapp/listFactorRiesgos';
+// const baseUrl5 = 'http://192.168.1.18:4000/Bitacorapp/addBitacora';
 
 
 
@@ -116,6 +122,7 @@ export default class App extends Component {
   async getBitacora() {
 
     try {
+     // const response = await axios.get('http://192.168.1.18:4000/Bitacorapp/edit/' + this.state.bitacoraid);
       const response = await axios.get('http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid);
       const { data } = response;
       this.setState({...this.state, listBitacora: data });
@@ -297,6 +304,7 @@ export default class App extends Component {
           horaSolucion,
           estado,
           factorRiesgoId } = this.state;
+       // const response = await axios.post('http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid, 
         const response = await axios.post('http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid, 
         {
           fechaDeIncidencia,
@@ -327,6 +335,7 @@ export default class App extends Component {
 
       try {
         this.setState({ ...this.state, loading:true })
+      //   axios.post('http://192.168.3.106:4000/Bitacorapp/delete/' + this.state.bitacoraid);
          axios.post('http://192.168.3.106:4000/Bitacorapp/delete/' + this.state.bitacoraid);
        console.log('regresar');
        this.setState({ ...this.state, loading:false })

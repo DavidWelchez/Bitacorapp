@@ -18,6 +18,17 @@ import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
 import axios from 'axios';
 import DatePicker from 'react-native-datepicker';
 import { TextInputMask } from "react-native-masked-text";
+import * as ImagePicker from 'expo-image-picker';
+//import ImagePicker from 'react-native-image-picker';
+//import {launchCamera, launchImageLibrary,ImagePicker} from 'react-native-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
+// const baseUrl =  'http://192.168.1.6:4000/Bitacorapp/listPlataforma';
+// const baseUrl1 = 'http://192.168.1.6:4000/Bitacorapp/listEventos';
+// const baseUrl2 = 'http://192.168.1.6:4000/Bitacorapp/listUsuarios';
+// const baseUrl3 = 'http://192.168.1.6:4000/Bitacorapp/listProveedores';
+// const baseUrl4 = 'http://192.168.1.6:4000/Bitacorapp/listFactorRiesgos';
+// const baseUrl5 = 'http://192.168.1.6:4000/Bitacorapp/addBitacora';
+
 const baseUrl =  'http://192.168.3.106:4000/Bitacorapp/listPlataforma';
 const baseUrl1 = 'http://192.168.3.106:4000/Bitacorapp/listEventos';
 const baseUrl2 = 'http://192.168.3.106:4000/Bitacorapp/listUsuarios';
@@ -37,7 +48,7 @@ const estados = [
   },
   {
     label: 'Completado',
-    value: 'Compleatdo',
+    value: 'Completado',
   },
 ];
 //const [value, onChange] = useState('10:00');
@@ -74,7 +85,7 @@ export default class App extends Component {
       listF: [],
 
       fechaDeIncidencia: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
-       horaDeIncidencia: hour.getHours() + ':' + hour.getMinutes(), 
+      horaDeIncidencia: hour.getHours() + ':' + hour.getMinutes(), 
       plataformaId: undefined,
       eventoId: undefined,
       descripcion:'',
@@ -85,8 +96,12 @@ export default class App extends Component {
       horaSolucion: hour.getHours() + ':' + hour.getMinutes(),
       factorRiesgoId: undefined,
       estado: undefined,
+      file: undefined,
       
       loading:true,
+      fieldname: undefined ,
+      originalname:undefined,
+      mimetype: undefined,
 
 
     };
@@ -156,6 +171,31 @@ export default class App extends Component {
       console.error(error);
     }
   }
+  async openImagePickerAsync() {
+    // let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
+
+    // if (permissionResult.granted === false) {
+    //   alert('Permission to access camera roll is required!');
+    //   return;
+    // }
+
+    this.state.file = await DocumentPicker.getDocumentAsync();
+    
+    console.log(this.state.file);
+    //console.log(this.state.file.file);
+   // console.log(this.state.file.name);  
+    
+  };
+  
+  // handleChoosePhoto(){
+  //   const options = {};
+  //   ImagePicker.launchImageLibraryAsync(options, response =>{
+  //     console.log("response" , response);
+  //   })
+
+
+
+  // };
 
   async addBitacora() {
 
@@ -212,19 +252,52 @@ export default class App extends Component {
          fechaSolucion,
          horaSolucion,
          estado,
-         factorRiesgoId} = this.state;
-      const response = await axios.post(baseUrl5, { fechaDeIncidencia,
-        horaDeIncidencia,
-        plataformaId,
-        eventoId,
-        descripcion,
-        userId,
-        atendioid,
-        proveedorId,
-       fechaSolucion,
-       horaSolucion,
-        estado,
-        factorRiesgoId});
+         factorRiesgoId,
+        file} = this.state;
+        // console.log(file.uri);
+        // console.log(file.file.name);
+        // console.log(file.file.type);
+        
+        const answerFormData = new FormData();
+        answerFormData.append("fechaDeIncidencia",(fechaDeIncidencia));
+        answerFormData.append("horaDeIncidencia", (horaDeIncidencia));
+        answerFormData.append("plataformaId", (plataformaId));
+        answerFormData.append("eventoId", (eventoId));
+        answerFormData.append("descripcion", (descripcion));
+        answerFormData.append("userId", (userId));
+        answerFormData.append("atendioid", (atendioid));
+        answerFormData.append("proveedorId",(proveedorId));
+        answerFormData.append("fechaSolucion", (fechaSolucion));
+        answerFormData.append("horaSolucion", (horaSolucion));
+        answerFormData.append("estado", (estado));
+        answerFormData.append("factorRiesgoId", (factorRiesgoId));
+        // don't forget to actually construct file if you haven't already
+       // answerFormData.append('archivo', file.file);
+       if(file){
+        answerFormData.append('archivo', {
+          uri: file.uri,
+          name: file.name,
+          type: 'image/jpeg',
+        });
+       }
+        
+        
+      //  answerFormData.append("archivo", file);
+        // to upload multiple files you need to append them with the same 'name' as below
+        //   console.log(answerFormData.archivo.name);
+        //console.log(answerFormData.archivo);
+      console.log(answerFormData);
+      //console.log(file.file);
+      const response = await   axios({
+      method: "POST",
+      url:  baseUrl5,
+      data: answerFormData,
+      headers: {
+          Accept: 'application/json',
+          "Content-Type": "multipart/form-data"
+      }
+  })
+       
       const { data } = response;  
       console.log(data);
       
@@ -565,6 +638,17 @@ export default class App extends Component {
             useNativeAndroidPickerStyle={false}
             
           />
+           
+         
+    
+           <Text></Text>
+      
+      <Button
+        background-color= "rgb(170, 224, 112)"
+        border-color=  "#338AFF"
+        color=  "#338AFF"
+         title="Agrear imagen" onPress={() => this.openImagePickerAsync()} />
+
 
           <View paddingVertical={5} />
          
