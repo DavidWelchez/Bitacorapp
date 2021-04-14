@@ -14,11 +14,15 @@ import {
 
 } from 'react-native';
 import React, { Component, useState, useEffect } from 'react';
+import { SocialIcon, Icon } from 'react-native-elements';
+
 import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
 // import RNPickerSelect, { defaultStyles } from './debug';
 import axios from 'axios';
 import DatePicker from 'react-native-datepicker';
 import { TextInputMask } from "react-native-masked-text";
+import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 const baseUrl =  'http://192.168.3.106:4000/Bitacorapp/listPlataforma';
 const baseUrl1 = 'http://192.168.3.106:4000/Bitacorapp/listEventos';
@@ -26,6 +30,7 @@ const baseUrl2 = 'http://192.168.3.106:4000/Bitacorapp/listUsuarios';
 const baseUrl3 = 'http://192.168.3.106:4000/Bitacorapp/listProveedores';
 const baseUrl4 = 'http://192.168.3.106:4000/Bitacorapp/listFactorRiesgos';
 const baseUrl5 = 'http://192.168.3.106:4000/Bitacorapp/addBitacora';
+
 
 // const baseUrl =  'http://192.168.1.18:4000/Bitacorapp/listPlataforma';
 // const baseUrl1 = 'http://192.168.1.18:4000/Bitacorapp/listEventos';
@@ -101,6 +106,7 @@ export default class App extends Component {
       
       empty: {},
       loading:true,
+      file: undefined,
 
     };
 
@@ -247,6 +253,21 @@ export default class App extends Component {
       console.error(error);
     }
   }
+  async openImagePickerAsync() {
+   
+    this.state.file = await ImagePicker.launchImageLibraryAsync();
+    
+    console.log(this.state.file);
+   
+  };
+  
+  async openCameraPickerAsync() {
+  
+    this.state.file = await ImagePicker.launchCameraAsync();
+
+    console.log(this.state.file);
+
+  };
 
   async EditBitacora() {
 
@@ -303,23 +324,61 @@ export default class App extends Component {
           fechaSolucion,
           horaSolucion,
           estado,
-          factorRiesgoId } = this.state;
-       // const response = await axios.post('http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid, 
-        const response = await axios.post('http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid, 
-        {
-          fechaDeIncidencia,
-          horaDeIncidencia,
-          plataformaId,
-          eventoId,
-          descripcion,
-          userId,
-          atendioid,
-          proveedorId,
-          fechaSolucion,
-          horaSolucion,
-          estado,
-          factorRiesgoId
-        });
+          factorRiesgoId,
+        file } = this.state;
+          const answerFormData = new FormData();
+          answerFormData.append("fechaDeIncidencia",(fechaDeIncidencia));
+          answerFormData.append("horaDeIncidencia", (horaDeIncidencia));
+          answerFormData.append("plataformaId", (plataformaId));
+          answerFormData.append("eventoId", (eventoId));
+          answerFormData.append("descripcion", (descripcion));
+          answerFormData.append("userId", (userId));
+          answerFormData.append("atendioid", (atendioid));
+          answerFormData.append("proveedorId",(proveedorId));
+          answerFormData.append("fechaSolucion", (fechaSolucion));
+          answerFormData.append("horaSolucion", (horaSolucion));
+          answerFormData.append("estado", (estado));
+          answerFormData.append("factorRiesgoId", (factorRiesgoId));
+      
+         if(file){
+          answerFormData.append('archivo', {
+            uri: file.uri,
+            name: 'imagen',
+            type: 'image/jpeg',
+          });
+         }
+          
+         
+        console.log(answerFormData);
+
+        const response = await   axios({
+          method: "POST",
+          url:  'http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid,
+          data: answerFormData,
+          headers: {
+              Accept: 'application/json',
+              "Content-Type": "multipart/form-data"
+          }
+      })
+
+      //  // const response = await axios.post('http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid, 
+      //   const response = await axios.post('http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid, 
+      //   {
+      //     fechaDeIncidencia,
+      //     horaDeIncidencia,
+      //     plataformaId,
+      //     eventoId,
+      //     descripcion,
+      //     userId,
+      //     atendioid,
+      //     proveedorId,
+      //     fechaSolucion,
+      //     horaSolucion,
+      //     estado,
+      //     factorRiesgoId
+      //   });
+
+
         const { data } = response;
         // console.log(data);
 
@@ -745,20 +804,55 @@ export default class App extends Component {
             // value={this.state.factorRiesgoId}
             useNativeAndroidPickerStyle={false}
 
-          />
+          />  
+
+     
 
           <View paddingVertical={5} />
 
           <View style={styles.button}>
+          <Text
+              style={{
+                textAlign: 'center',
+                padding: 20,
+                fontSize: 20,
+              }}>
+              Seleccione Imágen
+              </Text>
 
-            <Button
-              background-color="rgb(170, 224, 112)"
-              border-color="rgb(170, 224, 112)"
-              color="rgb(35, 148, 0)"
-              title="Actualizar" onPress={() => this.EditBitacora()} />
-          </View>
-          <Text></Text>
-          <View style={styles.button}>
+            <View style={{ flex: 1, flexDirection: 'row' }}>
+              <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', }}>
+                <Icon
+                  raised
+                  galeria
+                  name='camera'
+                  type='font-awesome'
+                  color='rgb(35, 148, 0)'
+                  onPress={() => this.openCameraPickerAsync()} />
+                <Text>
+                  Cámara
+                </Text>
+
+              </View>
+              <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', }}>
+             
+                <Icon
+                  raised
+                  galeria
+                  name='image'
+                  type='font-awesome'
+                  background-color="rgb(170, 224, 112)"
+                  color='rgb(35, 148, 0)'
+                  onPress={() => this.openImagePickerAsync()} />
+                  
+                <Text
+                >
+                  Galería
+              </Text>
+              </View>
+
+            </View>
+            <View style={styles.button}>
 
             <Button
               background-color="rgb(170, 224, 112)"
@@ -767,6 +861,15 @@ export default class App extends Component {
               title="Eliminar" onPress={() => this.openConfirmationAlert()} />
           </View>
 
+          <Text></Text>
+            <Button
+              background-color="rgb(170, 224, 112)"
+              border-color="rgb(170, 224, 112)"
+              color="rgb(35, 148, 0)"
+              title="Actualizar" onPress={() => this.EditBitacora()} />
+          </View>
+         
+          
         </ScrollView>
       </View>
     );

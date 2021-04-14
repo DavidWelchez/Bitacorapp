@@ -13,6 +13,7 @@ import {
 
 } from 'react-native';
 import React, { Component, useState, useEffect } from 'react';
+import { SocialIcon, Icon } from 'react-native-elements';
 import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
 // import RNPickerSelect, { defaultStyles } from './debug';
 import axios from 'axios';
@@ -29,7 +30,7 @@ import * as DocumentPicker from 'expo-document-picker';
 // const baseUrl4 = 'http://192.168.1.6:4000/Bitacorapp/listFactorRiesgos';
 // const baseUrl5 = 'http://192.168.1.6:4000/Bitacorapp/addBitacora';
 
-const baseUrl =  'http://192.168.3.106:4000/Bitacorapp/listPlataforma';
+const baseUrl = 'http://192.168.3.106:4000/Bitacorapp/listPlataforma';
 const baseUrl1 = 'http://192.168.3.106:4000/Bitacorapp/listEventos';
 const baseUrl2 = 'http://192.168.3.106:4000/Bitacorapp/listUsuarios';
 const baseUrl3 = 'http://192.168.3.106:4000/Bitacorapp/listProveedores';
@@ -64,19 +65,19 @@ export default class App extends Component {
     this.inputRefs = {
 
       favSport1: null,
-      plataformaId:null,
-      eventoId:null,
-      userId:null,
-      atendioid:null,
-      proveedorId:null,
-      factorRiesgoId:null,
-      estado:null
+      plataformaId: null,
+      eventoId: null,
+      userId: null,
+      atendioid: null,
+      proveedorId: null,
+      factorRiesgoId: null,
+      estado: null
 
     };
 
     var today = new Date;
     var hour = new Date;
-   
+
     this.state = {
       listP: [],
       listE: [],
@@ -85,10 +86,10 @@ export default class App extends Component {
       listF: [],
 
       fechaDeIncidencia: today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate(),
-      horaDeIncidencia: hour.getHours() + ':' + hour.getMinutes(), 
+      horaDeIncidencia: hour.getHours() + ':' + hour.getMinutes(),
       plataformaId: undefined,
       eventoId: undefined,
-      descripcion:'',
+      descripcion: '',
       userId: undefined,
       atendioid: undefined,
       proveedorId: undefined,
@@ -97,11 +98,12 @@ export default class App extends Component {
       factorRiesgoId: undefined,
       estado: undefined,
       file: undefined,
-      
-      loading:true,
-      fieldname: undefined ,
-      originalname:undefined,
+
+      loading: true,
+      fieldname: undefined,
+      originalname: undefined,
       mimetype: undefined,
+
 
 
     };
@@ -114,7 +116,7 @@ export default class App extends Component {
     this.getUsuarios();
     this.getProveedores();
     this.getFactorRiesgo();
-    this.setState({ ...this.state, loading:false })
+    this.setState({ ...this.state, loading: false })
 
   }
 
@@ -171,22 +173,22 @@ export default class App extends Component {
       console.error(error);
     }
   }
-  async openImagePickerAsync() {
-    // let permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
-
-    // if (permissionResult.granted === false) {
-    //   alert('Permission to access camera roll is required!');
-    //   return;
-    // }
-
-    this.state.file = await DocumentPicker.getDocumentAsync();
-    
-    console.log(this.state.file);
-    //console.log(this.state.file.file);
-   // console.log(this.state.file.name);  
-    
-  };
+  async openCameraPickerAsync() {
   
+
+    this.state.file = await ImagePicker.launchCameraAsync();
+
+    console.log(this.state.file);
+
+  };
+  async openImagePickerAsync() {
+
+    this.state.file = await ImagePicker.launchImageLibraryAsync();
+
+    console.log(this.state.file);
+
+  };
+
   // handleChoosePhoto(){
   //   const options = {};
   //   ImagePicker.launchImageLibraryAsync(options, response =>{
@@ -199,121 +201,121 @@ export default class App extends Component {
 
   async addBitacora() {
 
-    if (this.state.fechaDeIncidencia === null ) {
+    if (this.state.fechaDeIncidencia === null) {
       alert("Ingrese la fecha de incidencia, por favor.");
     }
-    if(this.state.horaDeIncidencia === null) {
+    if (this.state.horaDeIncidencia === null) {
       alert("Ingrese la hora de incidencia, por favor.");
     }
-    if(this.state.plataformaId === null) {
+    if (this.state.plataformaId === null) {
       alert("Ingrese la plataforma, por favor.");
     }
-    if(this.state.eventoId === null) {
+    if (this.state.eventoId === null) {
       alert("Ingrese el evento, por favor.");
     }
-    if(this.state.descripcion === '') {
+    if (this.state.descripcion === '') {
       alert("Ingrese la descripcion, por favor.");
     }
-    if(this.state.userId === undefined) {
+    if (this.state.userId === undefined) {
       alert("Ingrese el usuario reportó, por favor.");
     }
-    if(this.state.atendioid === null) {
+    if (this.state.atendioid === null) {
       alert("Ingrese el usuario atendio, por favor.");
     }
-    if(this.state.proveedorId === null) {
+    if (this.state.proveedorId === null) {
       alert("Ingrese el proveedor, por favor.");
     }
-    if(this.state.fechaSolucion === null) {
+    if (this.state.fechaSolucion === null) {
       alert("Ingrese la fecha solucion, por favor.");
     }
-    if(this.state.horaSolucion === null) {
+    if (this.state.horaSolucion === null) {
       alert("Ingrese la hora de solucion, por favor.");
     }
-    if(this.state.estado === undefined) {
+    if (this.state.estado === undefined) {
       alert("Ingrese el estado, por favor.");
     }
-    if(this.state.fechaSolucion === null) {
+    if (this.state.fechaSolucion === null) {
       alert("Ingrese la fecha de solucion, por favor.");
     }
-    if(this.state.factorRiesgoId === null) {
+    if (this.state.factorRiesgoId === null) {
       alert("Ingrese el factor de riesgo, por favor.");
     }
     else {
-  
-    try{
-      const { fechaDeIncidencia,
-        horaDeIncidencia,
-         plataformaId,
-         eventoId,
-         descripcion,
-         userId,
-         atendioid,
-         proveedorId,
-         fechaSolucion,
-         horaSolucion,
-         estado,
-         factorRiesgoId,
-        file} = this.state;
+
+      try {
+        const { fechaDeIncidencia,
+          horaDeIncidencia,
+          plataformaId,
+          eventoId,
+          descripcion,
+          userId,
+          atendioid,
+          proveedorId,
+          fechaSolucion,
+          horaSolucion,
+          estado,
+          factorRiesgoId,
+          file } = this.state;
         // console.log(file.uri);
         // console.log(file.file.name);
         // console.log(file.file.type);
-        
+
         const answerFormData = new FormData();
-        answerFormData.append("fechaDeIncidencia",(fechaDeIncidencia));
+        answerFormData.append("fechaDeIncidencia", (fechaDeIncidencia));
         answerFormData.append("horaDeIncidencia", (horaDeIncidencia));
         answerFormData.append("plataformaId", (plataformaId));
         answerFormData.append("eventoId", (eventoId));
         answerFormData.append("descripcion", (descripcion));
         answerFormData.append("userId", (userId));
         answerFormData.append("atendioid", (atendioid));
-        answerFormData.append("proveedorId",(proveedorId));
+        answerFormData.append("proveedorId", (proveedorId));
         answerFormData.append("fechaSolucion", (fechaSolucion));
         answerFormData.append("horaSolucion", (horaSolucion));
         answerFormData.append("estado", (estado));
         answerFormData.append("factorRiesgoId", (factorRiesgoId));
         // don't forget to actually construct file if you haven't already
-       // answerFormData.append('archivo', file.file);
-       if(file){
-        answerFormData.append('archivo', {
-          uri: file.uri,
-          name: file.name,
-          type: 'image/jpeg',
-        });
-       }
-        
-        
-      //  answerFormData.append("archivo", file);
+        // answerFormData.append('archivo', file.file);
+        if (file) {
+          answerFormData.append('archivo', {
+            uri: file.uri,
+            name: 'imagen',
+            type: 'image/jpeg',
+          });
+        }
+
+
+        //  answerFormData.append("archivo", file);
         // to upload multiple files you need to append them with the same 'name' as below
         //   console.log(answerFormData.archivo.name);
         //console.log(answerFormData.archivo);
-      console.log(answerFormData);
-      //console.log(file.file);
-      const response = await   axios({
-      method: "POST",
-      url:  baseUrl5,
-      data: answerFormData,
-      headers: {
-          Accept: 'application/json',
-          "Content-Type": "multipart/form-data"
+        console.log(answerFormData);
+        //console.log(file.file);
+        const response = await axios({
+          method: "POST",
+          url: baseUrl5,
+          data: answerFormData,
+          headers: {
+            Accept: 'application/json',
+            "Content-Type": "multipart/form-data"
+          }
+        })
+
+        const { data } = response;
+        console.log(data);
+
+        this.props.navigation.navigate("BitacoraList");
+
+      } catch (error) {
+        console.error(error);
       }
-  })
-       
-      const { data } = response;  
-      console.log(data);
-      
-      this.props.navigation.navigate("BitacoraList");
-    
-    }catch(error){
-      console.error(error);
     }
   }
-  }
-  
+
 
 
 
   render() {
-   
+
     const placeholder1 = {
       label: 'Plataforma',
       value: null,
@@ -353,8 +355,8 @@ export default class App extends Component {
     const { listE } = this.state;
     const { listU } = this.state;
     const { listPro } = this.state;
-    const { listF,plataformaId } = this.state;
-  
+    const { listF, plataformaId } = this.state;
+
 
 
 
@@ -400,14 +402,14 @@ export default class App extends Component {
 
 
 
-    
-     if (this.state.loading) {
-          return (
-            <View style={styles.loader}>
-              <ActivityIndicator size="large" color="rgb(35, 148, 0)" />
-            </View>
-          );
-        }
+
+    if (this.state.loading) {
+      return (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="rgb(35, 148, 0)" />
+        </View>
+      );
+    }
 
 
     return (
@@ -443,22 +445,22 @@ export default class App extends Component {
               }
               // ... You can check the source to find the other keys.
             }}
-           // onDateChange={date => this.state.fechaDeIncidencia= date }
-            onDateChange={(date) => { this.setState({...this.state,fechaDeIncidencia: date }) }}
+            // onDateChange={date => this.state.fechaDeIncidencia= date }
+            onDateChange={(date) => { this.setState({ ...this.state, fechaDeIncidencia: date }) }}
 
           />
           <Text></Text>
           <Text>Hora incidencia</Text>
           <TextInputMask
             placeholder="00:00"
-            
+
             type={"datetime"}
             options={{
               format: "HH:mm",
             }}
             value={this.state.horaDeIncidencia}
-           // onChangeText={(text) =>(this.state.horaDeIncidencia=text)}
-            onChangeText={(text) => { this.setState({...this.state,horaDeIncidencia: text});}}
+            // onChangeText={(text) =>(this.state.horaDeIncidencia=text)}
+            onChangeText={(text) => { this.setState({ ...this.state, horaDeIncidencia: text }); }}
           />
 
           <Text></Text>
@@ -467,13 +469,13 @@ export default class App extends Component {
             placeholder={placeholder1}
 
             items={plataforma}
-          //  onValueChange={value =>this.state.plataformaId=value },
-            onValueChange={(plataformaId) => this.setState({...this.state, plataformaId:plataformaId })}
-            
+            //  onValueChange={value =>this.state.plataformaId=value },
+            onValueChange={(plataformaId) => this.setState({ ...this.state, plataformaId: plataformaId })}
+
             style={pickerSelectStyles}
-           // value={plataformaId}
+            // value={plataformaId}
             useNativeAndroidPickerStyle={false}
-           
+
           />
           <Text></Text>
           <Text>Eventos</Text>
@@ -481,7 +483,7 @@ export default class App extends Component {
             placeholder={placeholder2}
 
             items={Eventos}
-          //  onValueChange={value =>this.state.eventoId=value }
+            //  onValueChange={value =>this.state.eventoId=value }
             onValueChange={value => {
               this.setState({
                 ...this.state, eventoId: value,
@@ -490,23 +492,23 @@ export default class App extends Component {
             style={pickerSelectStyles}
             //value={this.state.eventoId}
             useNativeAndroidPickerStyle={false}
-           
+
           />
           <Text></Text>
 
           <Text>Descripción</Text>
-          
-           <TextInput
-          placeholder="Descripción..."
-          multiline={true}
-          numberOfLines={4}
-         // onChangeText={(value) =>(this.state.descripcion=value )}
-          onChangeText={value => {
-            this.setState({
-              ...this.state,  descripcion: value,
-            });
-          }}
-        />
+
+          <TextInput
+            placeholder="Descripción..."
+            multiline={true}
+            numberOfLines={4}
+            // onChangeText={(value) =>(this.state.descripcion=value )}
+            onChangeText={value => {
+              this.setState({
+                ...this.state, descripcion: value,
+              });
+            }}
+          />
           <Text></Text>
 
           <Text>Empleado reportó</Text>
@@ -514,16 +516,16 @@ export default class App extends Component {
             placeholder={placeholder3}
 
             items={Usuarios}
-           // onValueChange={value =>this.state.userId=value }
+            // onValueChange={value =>this.state.userId=value }
             onValueChange={value => {
               this.setState({
-                ...this.state,  userId: value,
+                ...this.state, userId: value,
               });
             }}
             style={pickerSelectStyles}
             ///value={this.state.userId}
             useNativeAndroidPickerStyle={false}
-            
+
           />
           <Text></Text>
 
@@ -532,16 +534,16 @@ export default class App extends Component {
             placeholder={placeholder4}
 
             items={Usuarios}
-          //  onValueChange={value =>this.state.atendioid=value }
+            //  onValueChange={value =>this.state.atendioid=value }
             onValueChange={value => {
               this.setState({
-                ...this.state,  atendioid: value,
+                ...this.state, atendioid: value,
               });
             }}
             style={pickerSelectStyles}
-          //  value={this.state.atendioid}
+            //  value={this.state.atendioid}
             useNativeAndroidPickerStyle={false}
-            
+
           />
 
           <Text></Text>
@@ -550,16 +552,16 @@ export default class App extends Component {
             placeholder={placeholder5}
 
             items={Proveedores}
-           // onValueChange={value =>this.state.proveedorId=value }
+            // onValueChange={value =>this.state.proveedorId=value }
             onValueChange={value => {
               this.setState({
                 ...this.state, proveedorId: value,
               });
             }}
             style={pickerSelectStyles}
-           // value={this.state.proveedorId}
+            // value={this.state.proveedorId}
             useNativeAndroidPickerStyle={false}
-           
+
           />
           <Text></Text>
           <Text>Fecha de solucion </Text>
@@ -586,22 +588,22 @@ export default class App extends Component {
               }
               // ... You can check the source to find the other keys.
             }}
-            
-            onDateChange={(date) => { this.setState({...this.state, fechaSolucion: date }) }}
-          
+
+            onDateChange={(date) => { this.setState({ ...this.state, fechaSolucion: date }) }}
+
           />
           <Text></Text>
-               <Text>Hora solucion</Text>
+          <Text>Hora solucion</Text>
           <TextInputMask
             placeholder="00:00"
-            
+
             type={"datetime"}
             options={{
               format: "HH:mm",
             }}
             value={this.state.horaSolucion}
-           
-            onChangeText={(text) => {this.setState({...this.state,horaSolucion: text}); }}
+
+            onChangeText={(text) => { this.setState({ ...this.state, horaSolucion: text }); }}
           />
 
           <Text></Text>
@@ -613,13 +615,13 @@ export default class App extends Component {
             //onValueChange={value =>this.state.estado=value }
             onValueChange={value => {
               this.setState({
-                ...this.state,estado: value,
+                ...this.state, estado: value,
               });
             }}
             style={pickerSelectStyles}
-          //  value={this.state.estado}
+            //  value={this.state.estado}
             useNativeAndroidPickerStyle={false}
-           
+
           />
           <Text></Text>
           <Text>Factores de riesgo</Text>
@@ -630,36 +632,81 @@ export default class App extends Component {
             //onValueChange={value =>this.state.factorRiesgoId=value }
             onValueChange={value => {
               this.setState({
-                ...this.state,  factorRiesgoId: value,
+                ...this.state, factorRiesgoId: value,
               });
             }}
             style={pickerSelectStyles}
-           // value={this.state.factorRiesgoId}
+            // value={this.state.factorRiesgoId}
             useNativeAndroidPickerStyle={false}
-            
+
           />
-           
-         
-    
-           <Text></Text>
-      
-      <Button
-        background-color= "rgb(170, 224, 112)"
-        border-color=  "#338AFF"
-        color=  "#338AFF"
-         title="Agrear imagen" onPress={() => this.openImagePickerAsync()} />
 
 
-          <View paddingVertical={5} />
-         
-        <View style={styles.button}>
+
         
-        <Button
-        background-color= "rgb(170, 224, 112)"
-        border-color=  "rgb(170, 224, 112)"
-        color=  "rgb(35, 148, 0)"
-         title="Guardar" onPress={() => this.addBitacora()} />
-      </View>
+          {/* <Button
+            background-color="rgb(170, 224, 112)"
+            border-color="#338AFF"
+            color="#338AFF"
+            title="Galería" onPress={() => this.openImagePickerAsync()} />
+          <Text></Text>
+          <Button
+            background-color="rgb(170, 224, 112)"
+            border-color="#338AFF"
+            color="#338AFF"
+            title="Cámara" onPress={() => this.openCameraPickerAsync()} /> */}
+
+
+
+          <View style={styles.button}>
+            <Text
+              style={{
+                textAlign: 'center',
+                padding: 20,
+                fontSize: 20,
+              }}>
+              Seleccione Imagen
+              </Text>
+
+            <View style={{ flex: 1, flexDirection: 'row' }}>
+              <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', }}>
+                <Icon
+                  raised
+                  galeria
+                  name='camera'
+                  type='font-awesome'
+                  color='rgb(35, 148, 0)'
+                  onPress={() => this.openCameraPickerAsync()} />
+                <Text>
+                  Cámara
+                </Text>
+
+              </View>
+              <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', }}>
+             
+                <Icon
+                  raised
+                  galeria
+                  name='image'
+                  type='font-awesome'
+                  background-color="rgb(170, 224, 112)"
+                  color='rgb(35, 148, 0)'
+                  onPress={() => this.openImagePickerAsync()} />
+                  
+                <Text
+                >
+                  Galería
+              </Text>
+              </View>
+
+            </View>
+            <Text></Text>
+            <Button
+              background-color="rgb(170, 224, 112)"
+              border-color="rgb(170, 224, 112)"
+              color="rgb(35, 148, 0)"
+              title="Guardar" onPress={() => this.addBitacora()} />
+          </View>
 
         </ScrollView>
       </View>
