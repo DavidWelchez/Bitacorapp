@@ -6,9 +6,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import {  Text, TextInput, TouchableOpacity, View } from 'react-native';
 import axios from 'axios';
 
-// Navigation
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+
 
 //const baseUrl = 'http://192.168.1.6:4000/Bitacorapp/list'; 
 const baseUrl = 'http://192.168.3.106:4000/Bitacorapp/list'; 
@@ -16,11 +14,10 @@ class list extends Component {
   
   constructor() {
     super();
-    // this.addProduct = this.addProduct.bind(this); 
+ 
     this.state = {
       list:[]
-      // name:'',
-      // price:''
+      
     };
    
   }
@@ -43,22 +40,7 @@ class list extends Component {
     }
   }
   
-  // async addProduct() {
-  //   try{
-  //     const { name, price } = this.state;
-  //     const response = await axios.post(baseUrl, {name, price });
-  //     const { data } = response;  
-  //     console.log(data);
-  //     this.getProducts();
-  //     this.clearInput();
-  //   }catch(error){
-  //     console.error(error);
-  //   }
-  // }
 
-  // clearInput() {
-  //   this.setState({name:'', price:''});
-  // }
 
   render(){
    const { list} = this.state;
@@ -74,13 +56,7 @@ class list extends Component {
             onPress={() =>  this.props.navigation.navigate("BitacoraAdd")}
             title="Nuevo"
           />
-          {/* <Button
-          background-color= "rgb(170, 224, 112)"
-          border-color=  "rgb(170, 224, 112)"
-          color=  "rgb(35, 148, 0)"
-            onPress={() =>  this.props.navigation.navigate("Fecha")}
-            title="img"
-          /> */}
+        
           {list.map((bitacora) => {
             return (
               

@@ -273,8 +273,7 @@ export default class App extends Component {
         answerFormData.append("horaSolucion", (horaSolucion));
         answerFormData.append("estado", (estado));
         answerFormData.append("factorRiesgoId", (factorRiesgoId));
-        // don't forget to actually construct file if you haven't already
-        // answerFormData.append('archivo', file.file);
+        
         if (file) {
           answerFormData.append('archivo', {
             uri: file.uri,
@@ -284,12 +283,9 @@ export default class App extends Component {
         }
 
 
-        //  answerFormData.append("archivo", file);
-        // to upload multiple files you need to append them with the same 'name' as below
-        //   console.log(answerFormData.archivo.name);
-        //console.log(answerFormData.archivo);
-        console.log(answerFormData);
-        //console.log(file.file);
+      
+        
+        
         const response = await axios({
           method: "POST",
           url: baseUrl5,

@@ -6,39 +6,16 @@ import { View, Text, Image } from 'react-native';
 // Navigation
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-// import { createDrawerNavigator } from '@react-navigation/drawer';
 
-// const Drawer = createDrawerNavigator();
-// Components
-// import CreateUserScreen from "./screens/CreateUserScreen";
-// import UserDetailScreen from "./screens/UserDetailScreen";
 
 import BitacoraList from "./screens/BitacoraList";
 import BitacoraAdd from "./screens/BitacoraAdd";
 import BitacoraDetails from "./screens/BitacoraDetails";
-import Fecha from "./screens/Fecha";
 
 
-function LogoTitle() {
-  return (
-    <Image
-      style={{ width: 60, height: 60 }}
-      source={require('./assets/favico.png')}
-    />
-  );
-}
 
-// function MyDrawer() {
-//   return (
-//     <Drawer.Navigator>
-//       <Drawer.Screen name="BitacoraList"
-//         component={BitacoraList}
-//         // options={{   headerTitle: props => <LogoTitle {...props} />, title: 'Bitacorapp' }}
-//         options={{ title: "BitacorApp" }} />
-     
-//     </Drawer.Navigator>
-//   );
-// }
+
+
 const Stack = createStackNavigator();
 
 
@@ -73,11 +50,7 @@ function MyStack() {
         component={BitacoraDetails}
         options={{ title: "BitacorApp" }}
       />
-      {/* <Stack.Screen
-        name="Fecha"
-        component={Fecha}
-        options={{ title: "BitacorApp" }}
-      /> */}
+    
     </Stack.Navigator>
   );
 }
@@ -85,7 +58,7 @@ function MyStack() {
 export default function App() {
   return (
     <NavigationContainer>
-       {/* <MyDrawer /> */}
+    
       <MyStack />
      
     </NavigationContainer>

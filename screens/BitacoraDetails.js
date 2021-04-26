@@ -361,24 +361,7 @@ export default class App extends Component {
           }
       })
 
-      //  // const response = await axios.post('http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid, 
-      //   const response = await axios.post('http://192.168.3.106:4000/Bitacorapp/edit/' + this.state.bitacoraid, 
-      //   {
-      //     fechaDeIncidencia,
-      //     horaDeIncidencia,
-      //     plataformaId,
-      //     eventoId,
-      //     descripcion,
-      //     userId,
-      //     atendioid,
-      //     proveedorId,
-      //     fechaSolucion,
-      //     horaSolucion,
-      //     estado,
-      //     factorRiesgoId
-      //   });
-
-
+  
         const { data } = response;
         // console.log(data);
 
